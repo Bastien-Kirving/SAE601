@@ -1,0 +1,464 @@
+/* ============================================
+   Contact.css — Spider-Verse Contact Form
+   ============================================ */
+
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+    z-index: 20;
+}
+
+.contact-title {
+    margin-bottom: 50px;
+    text-align: center;
+}
+
+.contact-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    width: 100%;
+    max-width: 900px;
+    background:
+        radial-gradient(circle at 40px 0px, var(--primary-color-alpha, rgba(255, 23, 68, 0.4)) 0%, transparent 30px),
+        radial-gradient(circle at calc(100% - 40px) 0px, var(--primary-color-alpha, rgba(255, 23, 68, 0.4)) 0%, transparent 30px),
+        rgba(10, 10, 20, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 2;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.contact-card:hover {
+    transform: translateY(-8px);
+}
+
+/* Spider Webs Suspending the Card */
+.contact-card::before,
+.contact-card::after {
+    content: '';
+    position: absolute;
+    top: -100vh;
+    height: 100vh;
+    width: 2px;
+    pointer-events: none;
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent 20%, var(--primary-color, #ff1744) 95%);
+    box-shadow: 0 0 10px var(--primary-color, rgba(255, 23, 68, 0.6));
+    opacity: 0.9;
+    transform-origin: bottom center;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Left hanging web */
+.contact-card::before {
+    left: 40px;
+    transform: rotate(15deg);
+}
+
+/* Right hanging web */
+.contact-card::after {
+    right: 40px;
+    transform: rotate(-15deg);
+}
+
+/* Hover tension effect */
+.contact-card:hover::before {
+    transform: rotate(12deg) scaleY(1.02);
+}
+
+.contact-card:hover::after {
+    transform: rotate(-12deg) scaleY(1.02);
+}
+
+/* Form Styles */
+.contact-form {
+    flex: 2;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.form-group {
+    position: relative;
+    width: 100%;
+}
+
+.form-input {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 15px 20px;
+    color: #fff;
+    font-size: 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Button */
+.submit-btn {
+    margin-top: 10px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary-color, #ff1744);
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(255, 23, 68, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(1px);
+}
+
+/* Info Side */
+.contact-info {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    color: rgba(255, 255, 255, 0.8);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding-left: 40px;
+    position: relative;
+    z-index: 2;
+}
+
+.contact-info p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    background: var(--primary-color, #ff1744);
+    border-color: var(--primary-color, #ff1744);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 23, 68, 0.3);
+}
+
+/* ============================================
+   THEME STYLING
+   ============================================ */
+
+/* Miles Theme (Red/Black) */
+.theme-miles {
+    --primary-color-alpha: rgba(var(--primary-color-rgb), 0.4);
+    --sky-top: #020108;
+    --sky-mid: #0a0318;
+    --sky-bot: #1a0520;
+    --sky-horizon: #2d0a1a;
+    --building-color: #080412;
+    --city-glow: rgba(255, 23, 68, 0.12);
+    --light-color: rgba(255, 180, 100, 0.8);
+}
+
+.theme-miles .form-input:focus {
+    border-color: #ff1744;
+    box-shadow: 0 0 10px rgba(255, 23, 68, 0.2);
+}
+
+/* Gwen Theme (Pink/White) */
+.theme-gwen {
+    --primary-color-alpha: rgba(var(--primary-color-rgb), 0.3);
+    --sky-top: #f5f0ff;
+    --sky-mid: #f0e5fc;
+    --sky-bot: #ecdaff;
+    --sky-horizon: #e8d0f8;
+    --building-color: #2a1a3a;
+    --city-glow: rgba(224, 64, 251, 0.08);
+    --light-color: rgba(255, 220, 255, 0.9);
+}
+
+.theme-gwen .city-light {
+    --light-color: rgba(100, 50, 120, 0.6);
+}
+
+.theme-gwen .contact-card {
+    background:
+        radial-gradient(circle at 40px 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        radial-gradient(circle at calc(100% - 40px) 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        rgba(255, 255, 255, 0.8);
+    border-color: rgba(224, 64, 251, 0.2);
+    box-shadow: 0 10px 40px rgba(224, 64, 251, 0.15);
+}
+
+.theme-gwen .form-input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #111;
+}
+
+.theme-gwen .form-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.theme-gwen .form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.theme-gwen .contact-info {
+    color: #333;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-gwen .social-link {
+    background: #fff;
+    color: #111;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-gwen .submit-btn,
+.theme-gwen .social-link:hover {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+/* Glitch Theme (Green/Magenta) */
+.theme-glitch {
+    --primary-color-alpha: rgba(var(--primary-color-rgb), 0.3);
+    --sky-top: #050510;
+    --sky-mid: #0a0a18;
+    --sky-bot: #0f0f20;
+    --sky-horizon: #141428;
+    --building-color: #080812;
+    --city-glow: rgba(0, 255, 0, 0.15);
+    --light-color: rgba(0, 255, 0, 0.8);
+}
+
+.theme-glitch .contact-card {
+    background:
+        radial-gradient(circle at 40px 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        radial-gradient(circle at calc(100% - 40px) 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        rgba(15, 15, 30, 0.85);
+    border-color: rgba(0, 255, 0, 0.3);
+    box-shadow:
+        0 0 30px rgba(0, 255, 0, 0.06),
+        0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.theme-glitch .contact-card:hover {
+    box-shadow:
+        -8px 8px 0px rgba(0, 255, 0, 0.2),
+        8px -8px 0px rgba(255, 0, 255, 0.15),
+        0 0 40px rgba(0, 255, 0, 0.1),
+        0 15px 50px rgba(0, 0, 0, 0.8);
+}
+
+.theme-glitch .contact-card .contact-card-bg {
+    background-image: radial-gradient(rgba(0, 255, 0, 0.08) 1.5px, transparent 1.5px);
+}
+
+.theme-glitch .form-input {
+    border-left-color: #00FF00;
+}
+
+.theme-glitch .form-input:focus {
+    border-color: #00FF00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.theme-glitch .submit-btn {
+    background: #00FF00;
+    color: #000;
+}
+
+.theme-glitch .submit-btn:hover {
+    box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+}
+
+.theme-glitch .social-link:hover {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: #00FF00;
+    color: #00FF00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.25);
+}
+
+/* ============================================
+   INVERTED NYC BACKGROUND LAEYRS
+   ============================================ */
+
+.contact-background-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+    pointer-events: none;
+    transform: scaleY(-1);
+}
+
+.contact-background-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background: linear-gradient(180deg,
+            var(--sky-top) 0%,
+            var(--sky-mid) 40%,
+            var(--sky-bot) 70%,
+            var(--sky-horizon) 100%);
+}
+
+.contact-background-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45%;
+    z-index: -1;
+    background: var(--building-color);
+    clip-path: polygon(0% 100%, 0% 65%, 2% 65%, 2% 55%, 5% 55%, 5% 60%, 6% 60%, 6% 42%, 7% 40%, 8% 42%, 9% 42%, 9% 60%,
+            10% 60%, 10% 30%, 11% 28%, 12% 30%, 12% 60%, 13% 60%, 13% 45%, 18% 45%, 18% 60%,
+            19% 60%, 19% 35%, 20% 35%, 20% 18%, 20.5% 10%, 21% 18%, 21% 35%, 22% 35%, 22% 60%,
+            23% 60%, 23% 50%, 27% 50%, 27% 60%, 28% 60%, 28% 28%, 30% 25%, 32% 28%, 32% 60%,
+            33% 60%, 33% 48%, 36% 48%, 36% 60%, 37% 60%, 37% 38%, 38% 38%, 38.5% 8%, 39% 38%, 40% 38%, 40% 60%,
+            41% 60%, 41% 52%, 44% 52%, 44% 60%, 45% 60%, 45% 40%, 48% 38%, 51% 40%, 51% 60%,
+            52% 60%, 52% 55%, 55% 55%, 55% 60%, 56% 60%, 56% 32%, 57% 30%, 57.5% 15%, 58% 30%, 59% 32%, 59% 60%,
+            60% 60%, 60% 50%, 63% 50%, 63% 60%, 64% 60%, 64% 25%, 66% 22%, 68% 25%, 68% 60%,
+            69% 60%, 69% 45%, 72% 45%, 72% 60%, 73% 60%, 73% 38%, 77% 38%, 77% 60%,
+            78% 60%, 78% 48%, 81% 48%, 81% 60%, 82% 60%, 82% 30%, 83% 28%, 84% 30%, 84% 60%,
+            85% 60%, 85% 50%, 88% 50%, 88% 60%, 89% 60%, 89% 42%, 92% 42%, 92% 60%,
+            93% 60%, 93% 52%, 96% 52%, 96% 58%, 97% 58%, 97% 62%, 100% 65%, 100% 100%);
+    box-shadow: 0 0 80px 20px var(--city-glow);
+}
+
+.contact-background-wrapper .city-glow-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 35%;
+    z-index: -1;
+    background: radial-gradient(ellipse 120% 60% at 50% 100%,
+            var(--city-glow) 0%,
+            transparent 70%);
+    pointer-events: none;
+    animation: contactCityPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes contactCityPulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 0.8;
+    }
+}
+
+.contact-background-wrapper .city-lights {
+    position: absolute;
+    bottom: 5%;
+    left: 0;
+    width: 100%;
+    height: 38%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.contact-background-wrapper .city-light {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: var(--light-color);
+    box-shadow: 0 0 4px var(--light-color);
+    animation: contactWindowFlicker var(--flicker-dur) ease-in-out infinite alternate;
+    animation-delay: var(--flicker-delay);
+}
+
+@keyframes contactWindowFlicker {
+    0% {
+        opacity: 0.2;
+    }
+
+    50% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 0.4;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .contact-card {
+        flex-direction: column;
+        padding: 30px 20px;
+    }
+
+    .contact-info {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-left: 0;
+        padding-top: 30px;
+        align-items: center;
+        text-align: center;
+    }
+}

@@ -1,0 +1,53 @@
+/* ============================================
+   SpotTransition.css — The Spot scroll-driven transition
+   Black portals consume the screen between Projects → Skills
+   ============================================ */
+
+.spot-transition {
+    position: relative;
+    width: 100%;
+    height: 350vh;
+    overflow: visible;
+    /* Blend directly from Projects section background to Skills sky-top background */
+    /* Use transparent at the top to let the component canvas handle the fade, or match the exact section bg */
+    background: linear-gradient(to bottom, transparent 0%, var(--sky-top, #020108) 100%);
+    margin-bottom: -1px;
+    z-index: 5;
+}
+
+/* Fondu pour masquer les bordures dures de la section Compétences qui suit */
+.spot-transition::after {
+    content: '';
+    position: absolute;
+    bottom: -15vh; /* Déborde sur la section suivante */
+    left: 0;
+    width: 100%;
+    height: 15vh;
+    background: linear-gradient(to bottom, var(--sky-top, #020108) 0%, transparent 100%);
+    z-index: 50;
+    pointer-events: none;
+}
+
+/* Canvas stays fixed while section scrolls through */
+.spot-transition__canvas {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    display: block;
+    will-change: transform;
+    contain: layout style;
+
+    /* CSS mask — seamless fade at top & bottom edges */
+    -webkit-mask-image: linear-gradient(to bottom,
+            transparent 0%,
+            black 15%,
+            black 70%,
+            transparent 100%);
+    mask-image: linear-gradient(to bottom,
+            transparent 0%,
+            black 15%,
+            black 70%,
+            transparent 100%);
+}

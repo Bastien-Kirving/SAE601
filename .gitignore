@@ -1,0 +1,30 @@
+# Dependencies
+frontend/node_modules/
+
+# Build output
+frontend/dist/
+
+# Sensitive config — Ne jamais commiter
+backend/config/config.php
+
+# Fichiers de debug/test à la racine
+test_db.php
+backend/public/fix_password.php
+backend/public/test_login.php
+
+# Cache PHPUnit
+backend/.phpunit.result.cache
+
+# Logs
+frontend/log.txt
+frontend/log2.txt
+frontend/test_output.txt
+frontend/test_output2.txt
+backend/phpunit_log.txt
+
+# Test reports
+frontend/playwright-report/
+frontend/test-results/
+
+# Uploads utilisateurs (à gérer séparément)
+# backend/public/uploads/

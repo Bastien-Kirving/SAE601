@@ -1,0 +1,92 @@
+/* ============================================
+   MultiverseBackground.css
+   Spider-Man Miles Morales — Space-Time Tunnel
+   ============================================ */
+
+.multiverse-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 0;
+    background: #050508;
+}
+
+/* Full-screen canvas */
+.multiverse-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Scanline overlay */
+.scanline-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(0deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 23, 68, 0.015) 2px,
+            rgba(255, 23, 68, 0.015) 4px);
+}
+
+/* Color aberration flash */
+.aberration-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    animation: flashBurst 8s ease-in-out infinite;
+}
+
+@keyframes flashBurst {
+
+    0%,
+    88%,
+    100% {
+        opacity: 0;
+    }
+
+    90% {
+        opacity: 0.15;
+        background: radial-gradient(ellipse at center, rgba(255, 23, 68, 0.4) 0%, transparent 70%);
+    }
+
+    92% {
+        opacity: 0;
+    }
+
+    94% {
+        opacity: 0.2;
+        background: radial-gradient(ellipse at center, rgba(224, 64, 251, 0.3) 0%, transparent 70%);
+    }
+}
+
+/* Vignette */
+.vignette-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+            transparent 30%,
+            rgba(5, 5, 8, 0.6) 70%,
+            rgba(5, 5, 8, 0.95) 100%);
+}

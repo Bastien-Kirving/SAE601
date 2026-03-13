@@ -1,0 +1,263 @@
+/* ============================================
+   SpiderWebCard.css — Spider-Web Project Card
+   ============================================ */
+
+/* ---- Card Container ---- */
+.spider-card {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 1 / 1.1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    /* Reveal animation */
+    opacity: 0;
+    transform: translateY(40px) scale(0.9);
+    animation: spiderCardReveal 0.6s ease forwards;
+}
+
+@keyframes spiderCardReveal {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ---- SVG Web Background ---- */
+.spider-card__web {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 110%;
+    height: 110%;
+    transform: translate(-50%, -50%);
+    z-index: 0;
+    transition: transform 0.4s ease;
+    animation: webSpin 60s linear infinite;
+}
+
+@keyframes webSpin {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+.spider-card:hover .spider-card__web {
+    transform: translate(-50%, -50%) scale(1.08);
+    animation-play-state: paused;
+}
+
+.spider-card__web-path {
+    transition: opacity 0.4s ease, stroke-width 0.4s ease;
+}
+
+.spider-card__web-glow {
+    transition: opacity 0.4s ease;
+}
+
+/* ---- Card Content Panel ---- */
+.spider-card__content {
+    position: relative;
+    z-index: 1;
+    width: 80%;
+    max-height: 85%;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* Glassmorphism */
+    background: rgba(12, 12, 24, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    overflow: hidden;
+}
+
+.spider-card:hover .spider-card__content {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ---- Image ---- */
+.spider-card__image {
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.spider-card__image-placeholder {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 10px;
+    border: 1px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+
+.spider-card__image-icon {
+    opacity: 0.5;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.spider-card:hover .spider-card__image-icon {
+    opacity: 1;
+    transform: scale(1.2) rotate(10deg);
+}
+
+/* ---- Title ---- */
+.spider-card__title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    letter-spacing: -0.3px;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* ---- Description ---- */
+.spider-card__desc {
+    font-family: 'Inter', sans-serif;
+    font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+    color: rgba(255, 255, 255, 0.5);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ---- Tech Badges ---- */
+.spider-card__techs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 2px;
+}
+
+.spider-card__tech-badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border: 1px solid;
+    border-radius: 20px;
+    background: transparent;
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+    text-transform: uppercase;
+}
+
+.spider-card:hover .spider-card__tech-badge {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+/* ---- Action Links ---- */
+.spider-card__links {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.spider-card__link {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: opacity 0.3s ease, text-shadow 0.3s ease;
+    opacity: 0.7;
+}
+
+.spider-card__link:hover {
+    opacity: 1;
+    text-shadow: 0 0 12px currentColor;
+}
+
+/* ---- Glitch Flicker on Hover ---- */
+.spider-card--hovered .spider-card__title {
+    animation: cardGlitch 0.15s ease 1;
+}
+
+@keyframes cardGlitch {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-2px);
+    }
+
+    50% {
+        transform: translateX(3px);
+    }
+
+    75% {
+        transform: translateX(-1px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .spider-card {
+        max-width: 280px;
+    }
+
+    .spider-card__content {
+        padding: 16px 14px;
+        gap: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .spider-card {
+        max-width: 260px;
+    }
+}
+/* ============================================
+   GWEN LIGHT MODE OVERRIDES
+   ============================================ */
+.spider-card--gwen .spider-card__content {
+    background: rgba(255, 255, 255, 0.75);
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+.spider-card--gwen .spider-card__title {
+    color: #111;
+}
+
+.spider-card--gwen .spider-card__desc {
+    color: rgba(0, 0, 0, 0.6);
+}
+
+.spider-card--gwen:hover .spider-card__content {
+    box-shadow: 0 12px 40px rgba(224, 64, 251, 0.15);
+    border-color: rgba(0, 0, 0, 0.12);
+}
+
+.spider-card--gwen .spider-card__tech-badge {
+    color: #111 !important;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.spider-card--gwen:hover .spider-card__tech-badge {
+    background: rgba(0, 0, 0, 0.08);
+}
+

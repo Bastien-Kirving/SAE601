@@ -1,0 +1,201 @@
+/* ============================================
+   OrbitalScene.css — Système orbital 3D
+   ============================================ */
+
+/* ---- Conteneur principal ---- */
+.orbital-wrapper {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  min-height: 540px;
+  max-height: 820px;
+}
+
+.orbital-wrapper > canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* ---- Barre de filtre (HTML overlay) ---- */
+.orbital-filter {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  z-index: 20;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.orbital-filter-btn {
+  padding: 6px 18px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.42);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: color 0.22s ease, border-color 0.22s ease, background 0.22s ease, box-shadow 0.22s ease;
+  white-space: nowrap;
+  font-family: inherit;
+  backdrop-filter: blur(8px);
+}
+
+.orbital-filter-btn:hover {
+  color: var(--th, #FF1744);
+  border-color: var(--th, #FF1744);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.orbital-filter-btn--on {
+  color: var(--th, #FF1744);
+  border-color: var(--th, #FF1744);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 0 16px rgba(255, 255, 255, 0.03),
+    inset 0 0 12px rgba(255, 255, 255, 0.02);
+}
+
+/* ---- Labels d'anneau (dans Html drei) ---- */
+.orbit-ring-label {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.48);
+  background: rgba(4, 1, 14, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.orbit-ring-label:hover,
+.orbit-ring-label--on {
+  color: var(--th, #FF1744);
+  border-color: var(--th, #FF1744);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.04);
+}
+
+/* ---- Tooltip planète (dans Html drei) ---- */
+.orbit-tooltip {
+  background: rgba(4, 1, 16, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--th, #FF1744);
+  border-radius: 14px;
+  padding: 10px 14px;
+  min-width: 140px;
+  text-align: center;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(-8px);
+}
+
+.orbit-tooltip-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.orbit-tooltip-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.orbit-tooltip-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ebebf5;
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+}
+
+.orbit-tooltip-track {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.orbit-tooltip-fill {
+  height: 100%;
+  background: var(--th, #FF1744);
+  border-radius: 3px;
+  box-shadow: 0 0 6px var(--th, #FF1744);
+}
+
+.orbit-tooltip-pct {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--th, #FF1744);
+  font-variant-numeric: tabular-nums;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ---- Hint text ---- */
+.orbital-hint-text {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  font-size: 0.56rem;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  z-index: 10;
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .orbital-wrapper {
+    height: 60vh;
+    min-height: 420px;
+  }
+
+  .orbital-hint-text {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .orbital-wrapper {
+    height: 55vh;
+    min-height: 360px;
+  }
+
+  .orbital-filter {
+    bottom: 16px;
+    gap: 6px;
+    padding: 0 12px;
+  }
+
+  .orbital-filter-btn {
+    padding: 4px 12px;
+    font-size: 0.6rem;
+    letter-spacing: 1.5px;
+  }
+}

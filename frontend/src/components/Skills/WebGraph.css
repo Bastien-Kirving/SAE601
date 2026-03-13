@@ -1,0 +1,301 @@
+/* ============================================
+   WebGraph.css — Toile d'araignée interactive
+   ============================================ */
+
+/* ---- Conteneur ---- */
+.webgraph-wrap {
+  position: relative;
+  width: 100%;
+  height: 68vh;
+  min-height: 480px;
+  max-height: 780px;
+}
+
+/* ---- SVG principal ---- */
+.webgraph-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ============================================
+   Edges
+   ============================================ */
+.wg-edge {
+  /* Tissage : dashoffset commence à 1 (invisible) */
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition:
+    stroke-dashoffset 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+    stroke           0.25s ease,
+    stroke-width     0.25s ease;
+  pointer-events: none;
+}
+
+/* Fil tissé (classe ajoutée par JS) */
+.wg-edge--drawn {
+  stroke-dashoffset: 0;
+}
+
+/* Fil illuminé (hover du nœud connecté) */
+.wg-edge--lit {
+  stroke: var(--hex, #FF1744) !important;
+  stroke-width: 1.4px !important;
+  filter: url(#wg-glow-edge);
+}
+
+/* ============================================
+   Nodes — commun
+   ============================================ */
+.wg-node {
+  user-select: none;
+}
+
+.wg-node-circle {
+  transition:
+    r              0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+    stroke-width   0.25s ease,
+    filter         0.25s ease;
+}
+
+/* Anneau pulse : invisible par défaut, visible au hover */
+.wg-node-pulse {
+  opacity: 0;
+  transform-origin: center;
+  transition: opacity 0.3s ease, r 0.3s ease;
+  pointer-events: none;
+}
+
+/* ============================================
+   Nodes — catégorie
+   ============================================ */
+.wg-node--cat .wg-cat-label {
+  fill: rgba(255, 255, 255, 0.9);
+  font-size: 7.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  font-family: 'Outfit', sans-serif;
+  pointer-events: none;
+  text-transform: uppercase;
+}
+
+.wg-node--cat.wg-node--hov .wg-node-circle {
+  filter: url(#wg-glow-node);
+  stroke-width: 2.5px;
+}
+
+.wg-node--cat.wg-node--hov .wg-node-pulse {
+  opacity: 0.4;
+}
+
+/* ============================================
+   Nodes — skill
+   ============================================ */
+.wg-skill-icon {
+  pointer-events: none;
+  /* Ombre légère pour lisibilité */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.7));
+}
+
+/* Nom du skill : caché, visible au hover */
+.wg-skill-label {
+  fill: rgba(255, 255, 255, 0.82);
+  font-size: 8px;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  /* Fond de lecture */
+  paint-order: stroke fill;
+  stroke: rgba(4, 1, 14, 0.85);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.wg-node--skill.wg-node--hov .wg-skill-label {
+  opacity: 1;
+}
+
+.wg-level-arc {
+  transition: stroke-dasharray 1s ease;
+  pointer-events: none;
+}
+
+/* Hover skill */
+.wg-node--skill.wg-node--hov .wg-node-circle {
+  filter: url(#wg-glow-node);
+  stroke-width: 2px;
+}
+
+.wg-node--skill.wg-node--hov .wg-node-pulse {
+  opacity: 0.35;
+}
+
+.wg-node--skill.wg-node--hov .wg-level-arc {
+  opacity: 0.9;
+}
+
+/* ============================================
+   Hint
+   ============================================ */
+.webgraph-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.57rem;
+  letter-spacing: 1.5px;
+  color: rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  margin: 0;
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
+}
+
+/* ============================================
+   Panneau détail
+   ============================================ */
+.wg-detail-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+  background: rgba(4, 1, 14, 0.45);
+  backdrop-filter: blur(4px);
+  animation: wgOverlayIn 0.2s ease;
+}
+
+@keyframes wgOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.wg-detail-card {
+  position: relative;
+  background: rgba(6, 1, 18, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top-color: var(--th, #FF1744);
+  border-radius: 20px;
+  padding: 32px 36px;
+  min-width: 220px;
+  text-align: center;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 40px rgba(var(--th-rgb, 255,23,68), 0.08);
+  animation: wgCardIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes wgCardIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+.wg-detail-close {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s;
+  font-family: inherit;
+  padding: 0;
+}
+
+.wg-detail-close:hover {
+  color: var(--th, #FF1744);
+  border-color: var(--th, #FF1744);
+}
+
+.wg-detail-icon {
+  font-size: 2.8rem;
+  line-height: 1;
+  margin-bottom: 12px;
+  filter: drop-shadow(0 0 12px rgba(var(--th-rgb, 255,23,68), 0.4));
+}
+
+.wg-detail-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.3px;
+  margin-bottom: 4px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.wg-detail-cat {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--th, #FF1744);
+  opacity: 0.75;
+  margin-bottom: 16px;
+  font-family: 'Outfit', sans-serif;
+}
+
+.wg-detail-bar-track {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.wg-detail-bar-fill {
+  height: 100%;
+  background: var(--th, #FF1744);
+  border-radius: 4px;
+  box-shadow: 0 0 8px var(--th, #FF1744);
+  transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wg-detail-pct {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: var(--th, #FF1744);
+  font-variant-numeric: tabular-nums;
+  font-family: 'Outfit', sans-serif;
+  line-height: 1;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 768px) {
+  .webgraph-wrap {
+    height: 58vh;
+    min-height: 380px;
+  }
+
+  .webgraph-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .webgraph-wrap {
+    height: 52vh;
+    min-height: 300px;
+  }
+
+  .wg-detail-card {
+    padding: 24px 24px;
+    min-width: 180px;
+  }
+}

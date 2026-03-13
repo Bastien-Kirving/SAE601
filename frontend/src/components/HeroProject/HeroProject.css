@@ -1,0 +1,66 @@
+/* ============================================
+   HeroProject.css — Projects Section
+   ============================================ */
+
+.hero-project {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 120px 40px 80px;
+}
+
+/* ---- Projects Grid ---- */
+.projects-grid {
+    position: relative;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 40px;
+    justify-items: center;
+}
+
+/* ---- Title reveal ---- */
+.reveal-title {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-30px);
+    transition:
+        opacity 0.7s ease,
+        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.7s ease;
+    filter: blur(6px);
+}
+
+.hero-project--visible .reveal-title {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    filter: blur(0);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1024px) {
+    .projects-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        max-width: 700px;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-project {
+        padding: 100px 20px 60px;
+    }
+
+    .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        max-width: 340px;
+    }
+}

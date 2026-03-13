@@ -1,0 +1,394 @@
+/* ============================================
+   HeroSkill.css — Spider-Man Skills
+   Dark minimalist + web motifs + glassmorphism
+   ============================================ */
+
+/* ============================================
+   Custom Spider-Man Cursor
+   ============================================ */
+.hero-skill {
+    cursor: none;
+}
+
+.spider-cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background: var(--skill-primary, #FF1744);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    box-shadow: 0 0 8px var(--skill-glow, rgba(255, 23, 68, 0.6));
+    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+
+.spider-cursor-dot.spider-cursor--hover {
+    width: 6px;
+    height: 6px;
+    background: #fff;
+}
+
+.spider-cursor-ring {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid rgba(255, 23, 68, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    color: rgba(255, 23, 68, 0.5);
+    transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+}
+
+.spider-cursor-ring.spider-cursor--hover {
+    width: 52px;
+    height: 52px;
+    border-color: rgba(255, 23, 68, 0.9);
+    color: rgba(255, 23, 68, 0.7);
+}
+
+.spider-cursor-web {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    animation: cursorWebSpin 8s linear infinite;
+}
+
+.spider-cursor-ring.spider-cursor--hover .spider-cursor-web {
+    opacity: 1;
+}
+
+@keyframes cursorWebSpin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ---- Variables ---- */
+.hero-skill {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: block;
+    /* Modifié de flex à block pour corriger le layout sizing */
+    overflow: hidden;
+
+    --skill-primary: var(--primary-color, #FF1744);
+    --skill-primary-rgb: var(--primary-color-rgb, 255, 23, 68);
+    /* ... */
+    --skill-glow: rgba(var(--primary-color-rgb, 255, 23, 68), 0.55);
+    --skill-glow-soft: rgba(var(--primary-color-rgb, 255, 23, 68), 0.12);
+    --skill-border: rgba(var(--primary-color-rgb, 255, 23, 68), 0.28);
+}
+
+/* ---- Background géré via mask-image ---- */
+
+/* (particle canvas + spider web SVG supprimés — remplacés par Three.js Stars) */
+
+/* ---- Ambient orbs ---- */
+.skill-orbs {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 2;
+    overflow: hidden;
+}
+
+.skill-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+.skill-orb-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(var(--primary-color-rgb, 255, 23, 68), 0.12) 0%, transparent 70%);
+    top: -200px;
+    left: -150px;
+    animation: orbDrift 16s ease-in-out infinite alternate;
+}
+
+.skill-orb-2 {
+    width: 450px;
+    height: 450px;
+    background: radial-gradient(circle, rgba(90, 0, 200, 0.12) 0%, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    animation: orbDrift 22s ease-in-out infinite alternate-reverse;
+    animation-delay: -8s;
+}
+
+@keyframes orbDrift {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    100% {
+        transform: translate(40px, 60px) scale(1.1);
+    }
+}
+
+/* ============================================
+   Layout split inversé : Grid (gauche) | Image (droite)
+   ============================================ */
+.skills-split-layout {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    /* Étire les deux colonnes sur la même hauteur totale */
+    justify-content: space-between;
+}
+
+/* ── Panneau gauche : Contenu (Grille seule) ── */
+.skills-content-panel {
+    flex: 0 0 65%;
+    /* Ne prend que 65% de la largeur */
+    width: 65%;
+    max-width: 65%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Centre le wrapper grid verticalement */
+    padding: 0;
+    min-height: 100vh;
+    position: relative;
+    z-index: 10;
+    overflow: hidden;
+}
+
+/* ── Panneau droit : image ── */
+.skills-image-panel.right-panel {
+    position: absolute;
+    /* Devient indépendant du flex, force la hauteur max de la section */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 42%;
+    margin: 0;
+    padding: 0;
+    z-index: 20;
+    pointer-events: none;
+    /* Laisse le clic passer à travers pour la navbar/cartes si elles chevauchent */
+
+    /* Fondu progressif vers la gauche, le haut et le bas de l'image (pour supprimer la bordure nette) */
+    -webkit-mask-image:
+        linear-gradient(to right, transparent 0%, black 25%, black 100%),
+        linear-gradient(to bottom, transparent 0%, black 15vh, black calc(100% - 15vh), transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+        linear-gradient(to right, transparent 0%, black 25%, black 100%),
+        linear-gradient(to bottom, transparent 0%, black 15vh, black calc(100% - 15vh), transparent 100%);
+    mask-composite: intersect;
+}
+
+.skills-city-img {
+    position: absolute;
+    /* S'adapte exactement aux dimensions du composant parent (qui va de top: 0 à bottom: 0) */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* Prend 100% de la hauteur du panneau qui couvre toute la section */
+    object-fit: cover;
+    object-position: center;
+    display: block;
+}
+
+/* Fondu vers la gauche */
+.skills-image-overlay {
+    position: absolute;
+    /* Se superpose parfaitement à l'image */
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin-top: 0;
+    /* Plus besoin du hack de margin */
+    /* On laisse le masque CSS faire le dégradé, plus de couleur en dur ! */
+    background: transparent;
+    pointer-events: none;
+    z-index: 21;
+}
+
+/* ============================================
+   Titre Centré Globalement
+   ============================================ */
+.skills-header {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Titre centré horizontalement */
+    gap: 12px;
+    text-align: center;
+    margin: 0;
+    /* Remplace le margin-bottom pour un pur centrage */
+    pointer-events: none;
+
+    opacity: 0;
+    filter: blur(8px);
+    transform: translate(-50%, -50%) scale(0.9);
+    transition:
+        opacity 0.8s ease,
+        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+        filter 0.8s ease;
+}
+
+.hero-skill--visible .skills-header {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    filter: blur(0);
+}
+
+.skills-grid-wrapper {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.skills-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--skill-primary);
+    opacity: 0.85;
+}
+
+.skills-title {
+    margin: 0;
+    font-size: clamp(2.8rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -1px;
+    color: var(--text-color, #fff);
+}
+
+/* (Titre synchronisé avec la classe globale .hero-glitch) */
+
+/* Animated underline */
+.skills-title-line {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            var(--skill-primary) 40%,
+            rgba(var(--primary-color-rgb, 255, 23, 68), 0.4) 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 12px var(--skill-glow);
+    transition: width 1s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
+    margin-top: 8px;
+}
+
+.hero-skill--visible .skills-title-line {
+    width: 120px;
+}
+
+/* Loading */
+.skills-loading {
+    color: rgba(255, 255, 255, 0.35);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+}
+
+/* (styles cartes/grille supprimés — remplacés par OrbitalScene) */
+
+/* ============================================
+   Theme: Gwen
+   ============================================ */
+/* 
+.hero-skill.theme-gwen::before {
+    background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(224, 64, 251, 0.1) 0%, transparent 70%),
+        linear-gradient(180deg, #f8f0ff 0%, #ecdaff 50%, #e0ccf8 100%);
+}
+*/
+
+.hero-skill.theme-gwen .skills-eyebrow,
+.hero-skill.theme-gwen .group-label {
+    color: var(--skill-primary);
+}
+
+/* ============================================
+   Theme: Glitch
+   ============================================ */
+/*
+.hero-skill.theme-glitch::before {
+    background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 255, 136, 0.08) 0%, transparent 70%),
+        linear-gradient(180deg, #04040e 0%, #080816 50%, #0c0c20 100%);
+}
+*/
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+    .skills-split-layout {
+        flex-direction: column-reverse;
+        /* Image en bas, Compétences en haut sur mobile */
+    }
+
+    .skills-content-panel {
+        padding: 40px 20px 20px;
+        min-height: auto;
+    }
+
+    .skills-image-panel.right-panel {
+        position: relative;
+        /* Devient le conteneur du bas */
+        height: 35vh;
+        width: 100%;
+        flex: unset;
+        overflow: hidden;
+        /* Prévient les débordements sur mobile */
+    }
+
+    .skills-city-img {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+    }
+
+    .skills-image-overlay {
+        position: absolute;
+        inset: 0;
+        height: 100%;
+        /* Fondu vers le haut sur mobile géré par le masque */
+        background: transparent;
+    }
+
+    .skills-title {
+        font-size: 3.5rem;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .skills-image-panel.right-panel {
+        height: 25vh;
+    }
+
+    .skills-title {
+        font-size: 2.4rem;
+    }
+}
