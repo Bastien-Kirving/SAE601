@@ -14,6 +14,7 @@ export default function Admin() {
     const [token, setToken] = useState(localStorage.getItem('adminToken') || null);
     const navigate = useNavigate();
     const location = useLocation();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // Fonction utilitaire : déconnexion (réutilisée partout)
     const forceLogout = () => {
@@ -26,14 +27,22 @@ export default function Admin() {
         forceLogout();
     };
 
+    // Fermer le sidebar lors d'un changement de route (mobile)
+    useEffect(() => {
+        setSidebarOpen(false);
+    }, [location.pathname]);
+
     // Enregistrer le handler de logout dans apiFetch pour la gestion globale 401
     useEffect(() => {
         setAuthErrorHandler(handleLogout);
     }, []);
 
     return (
-        <div className="admin-layout">
-            <aside className="admin-sidebar">
+        <div className={`admin-layout ${sidebarOpen ? 'sidebar-open' : ''}`}>
+            {/* Overlay mobile */}
+            <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+
+            <aside className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
                 <div className="admin-brand">SAE601 Admin</div>
                 <nav className="admin-nav">
                     <Link to="/admin/dashboard" className={location.pathname === '/admin/dashboard' ? 'active' : ''}>Dashboard</Link>
@@ -47,6 +56,11 @@ export default function Admin() {
             </aside>
             <main className="admin-content">
                 <header className="admin-header">
+                    <button className="admin-burger" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Menu">
+                        <span className="burger-line"></span>
+                        <span className="burger-line"></span>
+                        <span className="burger-line"></span>
+                    </button>
                     <h2>Bienvenue dans l'espace administrateur</h2>
                 </header>
                 <div className="admin-body">
