@@ -470,7 +470,111 @@
 }
 
 /* ---- Responsive ---- */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
+    .hero-profile {
+        flex-direction: column;
+        min-height: auto;
+        padding-top: 120px;
+        padding-bottom: 60px;
+        justify-content: flex-start;
+        overflow-x: hidden;
+    }
+
+    .web-strands-svg {
+        display: none !important;
+    }
+
+    /* Reposition title */
+    .hero-title.reveal-title {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        text-align: center;
+        margin-bottom: 3rem;
+        width: 100%;
+    }
+
+    .hero-profile--visible .reveal-title {
+        transform: translateY(0) !important;
+    }
+
+    /* Photo size and centering */
+    .profile-photo-wrapper {
+        width: 250px;
+        height: 250px;
+        margin: 0 auto 4rem auto;
+        transform: none !important;
+    }
+
+    .profile-photo-glitch {
+        width: 180px;
+        height: 180px;
+        top: 50%;
+    }
+
+    .profile-ring--1 { width: 190px; height: 190px; }
+    .profile-ring--2 { width: 220px; height: 220px; }
+    .profile-ring--3 { width: 250px; height: 250px; }
+
+    /* Info Nodes — stacking */
+    .info-node {
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        margin: 0 auto 1.5rem auto;
+        width: 90%;
+        max-width: 320px;
+        justify-content: flex-start;
+        padding: 16px 20px;
+        opacity: 0;
+    }
+
+    .hero-profile--visible .info-node {
+        opacity: 1;
+        transform: translateY(0) !important;
+        animation: mobileNodeAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .info-node:hover {
+        transform: translateY(-4px) !important;
+    }
+
+    .info-node-icon {
+        font-size: 1.4rem;
+    }
+
+    .info-node-text strong {
+        font-size: 0.9rem;
+    }
+
+    .info-node-text span {
+        font-size: 0.7rem;
+    }
+}
+
+@keyframes mobileNodeAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title-line {
+        font-size: 2.5rem !important;
+    }
+
+    .hero-subtitle {
+        font-size: 0.7rem !important;
+        letter-spacing: 4px;
+    }
+
     .profile-photo-wrapper {
         width: 200px;
         height: 200px;
@@ -481,35 +585,7 @@
         height: 140px;
     }
 
-    .profile-ring--1 {
-        width: 160px;
-        height: 160px;
-    }
-
-    .profile-ring--2 {
-        width: 185px;
-        height: 185px;
-    }
-
-    .profile-ring--3 {
-        width: 210px;
-        height: 210px;
-    }
-
-    .info-node {
-        padding: 10px 14px;
-        border-radius: 12px;
-    }
-
-    .info-node-icon {
-        font-size: 1.2rem;
-    }
-
-    .info-node-text strong {
-        font-size: 0.8rem;
-    }
-
-    .info-node-text span {
-        font-size: 0.65rem;
-    }
+    .profile-ring--1 { width: 150px; height: 150px; }
+    .profile-ring--2 { width: 175px; height: 175px; }
+    .profile-ring--3 { width: 200px; height: 200px; }
 }
