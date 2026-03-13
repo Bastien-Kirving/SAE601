@@ -72,11 +72,11 @@
     z-index: 1000;
     display: flex;
     gap: 15px;
-    background: rgba(10, 10, 20, 0.4);
+    background: rgba(10, 10, 20, 0.7); /* Increased background opacity */
     padding: 10px 15px;
     border-radius: 30px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(4px); /* Reduced from 8px */
+    -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }

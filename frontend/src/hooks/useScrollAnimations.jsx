@@ -40,7 +40,7 @@ export function useScrollAnimations() {
         }
 
         // Toggle visibility (pause canvas when mostly hidden)
-        // Tight thresholds minimize simultaneous dual-canvas rendering (overlap 40%–60% only)
+        // Tight thresholds minimize simultaneous dual-canvas rendering (only overlap 20% now)
         setMultiverseVisible(raw < 0.60);
         setGlitchVisible(raw > 0.40);
 

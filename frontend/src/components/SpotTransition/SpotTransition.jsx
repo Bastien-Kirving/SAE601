@@ -267,15 +267,14 @@ export default function SpotTransition({ theme = 'miles' }) {
             if (sizeFactor > 0.3) {
                 const innerAlpha = (sizeFactor - 0.3) * 0.4;
                 const spiralCount = 3;
+                ctx.fillStyle = `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${innerAlpha * 0.1})`;
                 for (let s = 0; s < spiralCount; s++) {
                     const sAngle = (s / spiralCount) * Math.PI * 2 + time * 0.8;
                     const sR = radius * 0.6;
                     const sx = Math.cos(sAngle) * sR * 0.4;
                     const sy = Math.sin(sAngle) * sR * 0.4;
-                    // Simple fill circle instead of radial gradient (42 gradients/frame → 0)
                     ctx.beginPath();
                     ctx.arc(sx, sy, sR * 0.4, 0, Math.PI * 2);
-                    ctx.fillStyle = `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${innerAlpha * 0.1})`;
                     ctx.fill();
                 }
             }
