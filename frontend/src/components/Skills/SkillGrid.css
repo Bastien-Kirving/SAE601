@@ -179,3 +179,75 @@
     opacity: 1;
     text-shadow: 0 0 8px var(--skill-glow, rgba(255, 255, 255, 0.5));
 }
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+    .skill-grid-container {
+        gap: 1rem;
+        padding: 1rem 0;
+    }
+
+    .marquee-group {
+        gap: 1rem;
+        padding-right: 1rem;
+    }
+
+    .marquee-item {
+        width: 85px;
+        height: 85px;
+        border-radius: 10px;
+    }
+
+    .skill-card-inner {
+        gap: 6px;
+    }
+
+    .skill-icon-img {
+        width: 34px;
+        height: 34px;
+    }
+
+    .skill-name {
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+    }
+}
+
+@media (max-width: 600px) {
+    .skill-grid-container {
+        gap: 0.7rem;
+        padding: 0.75rem 0;
+    }
+
+    .marquee-group {
+        gap: 0.7rem;
+        padding-right: 0.7rem;
+    }
+
+    .marquee-item {
+        width: 68px;
+        height: 68px;
+        border-radius: 8px;
+    }
+
+    .skill-card-inner {
+        gap: 4px;
+    }
+
+    .skill-icon-img {
+        width: 26px;
+        height: 26px;
+    }
+
+    .skill-name {
+        font-size: 0.62rem;
+        letter-spacing: 0;
+    }
+
+    /* Masque la 4e rangée pour alléger l'affichage */
+    .marquee-row:last-child {
+        display: none;
+    }
+}

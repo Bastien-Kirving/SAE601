@@ -341,54 +341,80 @@
 /* ============================================
    Responsive
    ============================================ */
+
+/* Masque le curseur custom sur écrans tactiles */
+@media (hover: none) {
+    .hero-skill {
+        cursor: auto;
+    }
+
+    .spider-cursor-dot,
+    .spider-cursor-ring {
+        display: none;
+    }
+}
+
 @media (max-width: 900px) {
     .skills-split-layout {
-        flex-direction: column-reverse;
-        /* Image en bas, Compétences en haut sur mobile */
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    /* Header sort du positionnement absolu et rejoint le flux flex */
+    .skills-header {
+        position: static;
+        top: auto;
+        left: auto;
+        transform: translateY(-12px);
+        /* Réinitialise le translate desktop */
+        order: 0;
+        padding: 60px 24px 12px;
+        width: 100%;
+        align-self: center;
+        pointer-events: auto;
+    }
+
+    .hero-skill--visible .skills-header {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
     }
 
     .skills-content-panel {
-        padding: 40px 20px 20px;
+        flex: 1;
+        order: 1;
+        width: 100%;
+        max-width: 100%;
+        padding: 8px 0 32px;
         min-height: auto;
+        justify-content: flex-start;
     }
 
     .skills-image-panel.right-panel {
-        position: relative;
-        /* Devient le conteneur du bas */
-        height: 35vh;
-        width: 100%;
-        flex: unset;
-        overflow: hidden;
-        /* Prévient les débordements sur mobile */
-    }
-
-    .skills-city-img {
-        position: absolute;
-        height: 100%;
-        width: 100%;
-        object-fit: cover;
-    }
-
-    .skills-image-overlay {
-        position: absolute;
-        inset: 0;
-        height: 100%;
-        /* Fondu vers le haut sur mobile géré par le masque */
-        background: transparent;
+        display: none;
     }
 
     .skills-title {
-        font-size: 3.5rem;
+        font-size: clamp(2.4rem, 8vw, 3.5rem);
     }
 
+    .skill-orb-1 {
+        width: 300px;
+        height: 300px;
+    }
+
+    .skill-orb-2 {
+        width: 200px;
+        height: 200px;
+    }
 }
 
 @media (max-width: 600px) {
-    .skills-image-panel.right-panel {
-        height: 25vh;
+    .skills-header {
+        padding: 50px 16px 8px;
     }
 
     .skills-title {
-        font-size: 2.4rem;
+        font-size: clamp(2rem, 10vw, 2.8rem);
     }
 }
