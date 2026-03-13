@@ -72,6 +72,18 @@ class MessageController extends Controller
     }
 
     /**
+     * DELETE /api/messages/{id} — Supprimer un message
+     */
+    public function destroy(int $id): void
+    {
+        if ($this->messageModel->delete($id)) {
+            $this->jsonResponse(['message' => 'Message supprimé']);
+        } else {
+            $this->jsonResponse(['error' => 'Erreur lors de la suppression'], 500);
+        }
+    }
+
+    /**
      * Envoyer une notification par email pour un nouveau message
      */
     private function sendEmailNotification(array $data): void
