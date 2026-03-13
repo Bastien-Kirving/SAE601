@@ -62,9 +62,36 @@ class MessageController extends Controller
 
         $messageId = $this->messageModel->create($messageData);
 
+        // Envoyer une notification par email
+        $this->sendEmailNotification($messageData);
+
         $this->jsonResponse([
             'message' => 'Message envoyé avec succès',
             'id' => $messageId
         ], 201);
+    }
+
+    /**
+     * Envoyer une notification par email pour un nouveau message
+     */
+    private function sendEmailNotification(array $data): void
+    {
+        $to = ADMIN_EMAIL;
+        $subject = "Nouveau message de contact : " . ($data['subject'] ?? 'Sans objet');
+        
+        $body = "Vous avez reçu un nouveau message via votre portfolio :\n\n";
+        $body .= "Nom : " . $data['name'] . "\n";
+        $body .= "Email : " . $data['email'] . "\n";
+        $body .= "Sujet : " . ($data['subject'] ?? 'N/A') . "\n\n";
+        $body .= "Message :\n" . $data['content'] . "\n\n";
+        $body .= "--- \nCe message a été envoyé automatiquement depuis votre Portfolio SAE601.";
+
+        $headers = "From: webmaster@portfolio.com\r\n";
+        $headers .= "Reply-To: " . $data['email'] . "\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion();
+
+        // On utilise @mail pour ignorer les erreurs si le serveur n'est pas configuré
+        // En local, cela retournera false sans planter l'exécution.
+        @mail($to, $subject, $body, $headers);
     }
 }
