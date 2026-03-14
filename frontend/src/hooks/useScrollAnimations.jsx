@@ -18,6 +18,9 @@ export function useScrollAnimations() {
     const lastSection = useRef(0);
     const rafId = useRef(null);
     const progressRef = useRef(0);
+    const multiverseVisibleRef = useRef(true);
+    const glitchVisibleRef = useRef(false);
+    const lastDispatchRef = useRef(0);
 
     const updateOpacities = useCallback(() => {
         const container = refs.scrollContainer.current;
@@ -43,9 +46,17 @@ export function useScrollAnimations() {
             refs.heroContent.current.style.opacity = multiverseOpacity;
         }
 
-        // Toggle visibility (pause canvas when mostly hidden)
-        setMultiverseVisible(raw < 0.60);
-        setGlitchVisible(raw > 0.40);
+        // Toggle visibility — only setState when value actually changes (avoids re-render on every scroll)
+        const newMultiverseVisible = raw < 0.60;
+        const newGlitchVisible = raw > 0.40;
+        if (newMultiverseVisible !== multiverseVisibleRef.current) {
+            multiverseVisibleRef.current = newMultiverseVisible;
+            setMultiverseVisible(newMultiverseVisible);
+        }
+        if (newGlitchVisible !== glitchVisibleRef.current) {
+            glitchVisibleRef.current = newGlitchVisible;
+            setGlitchVisible(newGlitchVisible);
+        }
 
         // Detect section change — trigger glitch burst via direct DOM (no React state)
         const currentSection = raw > 0.5 ? 1 : 0;
@@ -89,8 +100,12 @@ export function useScrollAnimations() {
 
         const onScroll = () => {
             handleScroll();
-            // Re-dispatcher sur window pour les composants qui écoutent window scroll
-            window.dispatchEvent(new Event('scroll'));
+            // Re-dispatch sur window, throttlé à 60fps pour éviter la cascade de handlers
+            const now = Date.now();
+            if (now - lastDispatchRef.current > 16) {
+                lastDispatchRef.current = now;
+                window.dispatchEvent(new Event('scroll'));
+            }
         };
 
         container.addEventListener('scroll', onScroll, { passive: true });

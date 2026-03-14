@@ -91,7 +91,7 @@ export default function SpotTransition({ theme = 'miles' }) {
 
         // === SPOTS (dimensional portals) ===
         state.spots = [];
-        const spotCount = 14;
+        const spotCount = 10;
         for (let i = 0; i < spotCount; i++) {
             const t = i / spotCount;
             state.spots.push({
@@ -117,7 +117,7 @@ export default function SpotTransition({ theme = 'miles' }) {
 
         // === INK PARTICLES ===
         state.inkParticles = [];
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 30; i++) {
             // Each particle is associated with a random spot
             const parentSpot = Math.floor(rng() * spotCount);
             state.inkParticles.push({
@@ -133,7 +133,7 @@ export default function SpotTransition({ theme = 'miles' }) {
 
         // === DIMENSIONAL CRACKS ===
         state.cracks = [];
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 8; i++) {
             const segments = 4 + Math.floor(rng() * 6);
             const points = [];
             let px = rng() * W;
@@ -231,18 +231,18 @@ export default function SpotTransition({ theme = 'miles' }) {
             ctx.rotate(spot.rotation + time * 0.1 * (i % 2 === 0 ? 1 : -1));
             ctx.scale(1, spot.ellipseRatio);
 
-            // --- Outer glow (dimensional energy) ---
+            // --- Outer glow (cercles concentriques, pas de gradient radial) ---
             const glowColor = i % 2 === 0 ? colors.glow : colors.glowAlt;
             const glowAlpha = clamp(localP * 0.6) * (1 - clamp((p - 0.85) / 0.15));
             const glowRadius = radius * 1.8;
 
-            const glowGrad = ctx.createRadialGradient(0, 0, radius * 0.8, 0, 0, glowRadius);
-            glowGrad.addColorStop(0, `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${glowAlpha * 0.4})`);
-            glowGrad.addColorStop(0.5, `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${glowAlpha * 0.15})`);
-            glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctx.fillStyle = glowGrad;
             ctx.beginPath();
             ctx.arc(0, 0, glowRadius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${glowAlpha * 0.1})`;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(0, 0, radius * 1.2, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${glowAlpha * 0.25})`;
             ctx.fill();
 
             // --- Spot border (bright ring) ---
@@ -253,14 +253,16 @@ export default function SpotTransition({ theme = 'miles' }) {
             ctx.lineWidth = 2 + sizeFactor * 2;
             ctx.stroke();
 
-            // --- Inner black portal ---
-            const innerGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
-            innerGrad.addColorStop(0, `rgba(0, 0, 0, ${clamp(localP)})`);
-            innerGrad.addColorStop(0.7, `rgba(${colors.ink[0]}, ${colors.ink[1]}, ${colors.ink[2]}, ${clamp(localP) * 0.95})`);
-            innerGrad.addColorStop(1, `rgba(0, 0, 0, ${clamp(localP) * 0.8})`);
-            ctx.fillStyle = innerGrad;
+            // --- Inner black portal (fill simple, pas de gradient radial) ---
+            const portalAlpha = clamp(localP);
             ctx.beginPath();
             ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 0, 0, ${portalAlpha})`;
+            ctx.fill();
+            // Anneau ink près du bord
+            ctx.beginPath();
+            ctx.arc(0, 0, radius * 0.88, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${colors.ink[0]}, ${colors.ink[1]}, ${colors.ink[2]}, ${portalAlpha * 0.5})`;
             ctx.fill();
 
             // --- Inner dimension effect (swirling pattern inside portal) ---
@@ -397,21 +399,16 @@ export default function SpotTransition({ theme = 'miles' }) {
             ctx.fillStyle = `rgba(0, 0, 0, ${consumeT * 0.9})`;
             ctx.fillRect(0, 0, W, H);
 
-            // Remaining spot glows intensify then fade
+            // Glow résiduel — un seul overlay centré au lieu de 14 gradients individuels
             if (consumeT < 0.7) {
-                state.spots.forEach((spot, i) => {
-                    const cx = spot.x * W;
-                    const cy = spot.y * H;
-                    const glowColor = i % 2 === 0 ? colors.glow : colors.glowAlt;
-                    const ga = (1 - consumeT) * 0.4;
-                    const gr = 50 + consumeT * 150;
-
-                    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, gr);
-                    g.addColorStop(0, `rgba(${glowColor[0]}, ${glowColor[1]}, ${glowColor[2]}, ${ga})`);
-                    g.addColorStop(1, 'rgba(0,0,0,0)');
-                    ctx.fillStyle = g;
-                    ctx.fillRect(cx - gr, cy - gr, gr * 2, gr * 2);
-                });
+                const ga = (1 - consumeT) * 0.35;
+                const gr = W * 0.6;
+                const gc = colors.glow;
+                const g = ctx.createRadialGradient(W / 2, H / 2, 0, W / 2, H / 2, gr);
+                g.addColorStop(0, `rgba(${gc[0]}, ${gc[1]}, ${gc[2]}, ${ga})`);
+                g.addColorStop(1, 'rgba(0,0,0,0)');
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, W, H);
             }
         }
 

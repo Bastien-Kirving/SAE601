@@ -159,7 +159,7 @@
 /* ----- ADMIN DASHBOARD LAYOUT ----- */
 .admin-layout {
     display: flex;
-    min-height: 100vh;
+    height: 100%;
     font-family: 'Outfit', 'Inter', sans-serif;
     background-color: var(--admin-bg-color);
     color: var(--admin-text-primary);
@@ -251,6 +251,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+    overflow: hidden;
     /* Empêche le débordement horizontal flex */
 }
 

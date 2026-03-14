@@ -291,8 +291,8 @@ class EnergyBeam {
 // ============================================
 
 const RING_COUNT = 14;
-const SPEED_LINE_COUNT = 50;
-const PARTICLE_COUNT = 60;
+const SPEED_LINE_COUNT = 35;
+const PARTICLE_COUNT = 40;
 const BEAM_COUNT = 8;
 
 // Camera settings
@@ -301,10 +301,12 @@ const CAMERA_SMOOTHING = 0.05;
 
 const MultiverseBackground = memo(function MultiverseBackground({ theme = 'miles', themeData }) {
     const canvasRef = useRef(null);
+    const containerRef = useRef(null);
     const entitiesRef = useRef(null);
     const animRef = useRef(null);
     const mouseRef = useRef({ x: 0.5, y: 0.5 });
     const cameraRef = useRef({ x: 0, y: 0 });
+    const isVisibleRef = useRef(true);
 
     // useMemo ensures themeConfig is a stable reference between renders,
     // preventing the useEffect from restarting the canvas animation loop
@@ -375,6 +377,10 @@ const MultiverseBackground = memo(function MultiverseBackground({ theme = 'miles
         window.addEventListener('mousemove', handleMouse);
 
         function animate(timestamp) {
+            if (!isVisibleRef.current) {
+                animRef.current = requestAnimationFrame(animate);
+                return;
+            }
             const time = timestamp || 0;
             ctx.clearRect(0, 0, W, H);
 
@@ -450,8 +456,17 @@ const MultiverseBackground = memo(function MultiverseBackground({ theme = 'miles
         };
     }, [theme, themeConfig]); // Re-run when theme changes or theme configuration loads
 
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+            { threshold: 0 }
+        );
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <div className={`multiverse-container theme-${theme}`}>
+        <div ref={containerRef} className={`multiverse-container theme-${theme}`}>
             <canvas ref={canvasRef} className="multiverse-canvas" />
             <div className="scanline-overlay" />
             <div className="aberration-flash" />
