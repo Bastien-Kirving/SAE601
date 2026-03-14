@@ -274,4 +274,77 @@
     }
 }
 
-/* → Info nodes, animations et responsive dans HeroProfile.nodes.css */
+/* ============================================
+   RESPONSIVE MOBILE
+   ============================================ */
+@media (max-width: 900px) {
+    /* Grid 2 colonnes : photo pleine largeur + nodes en paires */
+    .hero-profile {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+        align-items: start;
+        gap: 0.75rem;
+        padding: 110px 1rem 3rem;
+        min-height: 100vh;
+    }
+
+    /* SVG strands masqué : les nodes quittent le mode absolu */
+    .web-strands-svg {
+        display: none;
+    }
+
+    /* Titre : corrige le left: 50% inline */
+    .hero-title.reveal-title {
+        left: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Photo : prend les 2 colonnes */
+    .profile-photo-wrapper {
+        grid-column: 1 / -1;
+        position: relative !important;
+        width: 260px !important;
+        height: 260px !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-photo-wrapper.reveal-element {
+        transform: translateY(20px) scale(0.95);
+    }
+
+    .hero-profile--visible .profile-photo-wrapper.reveal-element {
+        transform: none;
+    }
+
+    .profile-photo-glitch {
+        width: 170px !important;
+        height: 170px !important;
+    }
+
+    .profile-ring--1 { width: 185px !important; height: 185px !important; }
+    .profile-ring--2 { width: 220px !important; height: 220px !important; }
+    .profile-ring--3 { width: 252px !important; height: 252px !important; }
+}
+
+@media (max-width: 480px) {
+    /* 1 colonne sur très petit écran */
+    .hero-profile {
+        grid-template-columns: 1fr;
+        padding: 100px 0.75rem 2rem;
+    }
+
+    .profile-photo-wrapper {
+        width: 220px !important;
+        height: 220px !important;
+    }
+
+    .profile-photo-glitch {
+        width: 145px !important;
+        height: 145px !important;
+    }
+
+    .profile-ring--1 { width: 158px !important; height: 158px !important; }
+    .profile-ring--2 { width: 188px !important; height: 188px !important; }
+    .profile-ring--3 { width: 215px !important; height: 215px !important; }
+}
