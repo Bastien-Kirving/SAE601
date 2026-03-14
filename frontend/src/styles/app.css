@@ -2,6 +2,12 @@
    app.css — Scroll layout, transitions, glitch burst
    ============================================ */
 
+/* ---- App container ---- */
+.app-container {
+    height: 100%;
+    position: relative;
+}
+
 /* ---- Fixed background layers ---- */
 .bg-layer {
     position: fixed;
@@ -79,6 +85,9 @@
     -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    will-change: transform;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 @media (max-width: 768px) {
@@ -95,7 +104,8 @@
         top: 10px;
         left: 50%;
         right: auto;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateZ(0);
+        -webkit-transform: translateX(-50%) translateZ(0);
         gap: 8px;
     }
 
@@ -159,6 +169,10 @@
     position: relative;
     z-index: 10;
     pointer-events: auto;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
 .section {

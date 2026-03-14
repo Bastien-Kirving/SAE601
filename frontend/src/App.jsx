@@ -92,7 +92,7 @@ export default function App() {
             </div>
 
             {/* ---- SCROLLABLE CONTENT ---- */}
-            <div className="scroll-content">
+            <div className="scroll-content" ref={refs.scrollContainer}>
                 {/* Section 1: Hero (multiverse visible) */}
                 <section className="section section-hero">
                     <div className="hero-content" ref={refs.heroContent}>

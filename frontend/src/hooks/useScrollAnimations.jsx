@@ -11,6 +11,7 @@ export function useScrollAnimations() {
         glitch: useRef(null),
         heroContent: useRef(null),
         glitchBurst: useRef(null), // direct DOM ref — avoids React state update
+        scrollContainer: useRef(null), // conteneur de scroll interne (évite le scroll window)
     };
 
     // Internal state refs
@@ -19,8 +20,11 @@ export function useScrollAnimations() {
     const progressRef = useRef(0);
 
     const updateOpacities = useCallback(() => {
-        const scrollY = window.scrollY;
-        const windowH = window.innerHeight;
+        const container = refs.scrollContainer.current;
+        if (!container) return;
+
+        const scrollY = container.scrollTop;
+        const windowH = container.clientHeight;
 
         const raw = Math.min(1, Math.max(0, scrollY / windowH));
         progressRef.current = raw;
@@ -40,7 +44,6 @@ export function useScrollAnimations() {
         }
 
         // Toggle visibility (pause canvas when mostly hidden)
-        // Tight thresholds minimize simultaneous dual-canvas rendering (only overlap 20% now)
         setMultiverseVisible(raw < 0.60);
         setGlitchVisible(raw > 0.40);
 
@@ -66,12 +69,15 @@ export function useScrollAnimations() {
     }, [updateOpacities]);
 
     useEffect(() => {
+        const container = refs.scrollContainer.current;
+        if (!container) return;
+
         // Initial opacity
         updateOpacities();
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+        container.addEventListener('scroll', handleScroll, { passive: true });
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            container.removeEventListener('scroll', handleScroll);
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
     }, [handleScroll, updateOpacities]);

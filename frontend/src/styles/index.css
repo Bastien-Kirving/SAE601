@@ -12,14 +12,15 @@
 }
 
 html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
+    height: 100%;
+    overflow: hidden;
 }
 
 body,
 #root {
     width: 100%;
-    min-height: 100%;
+    height: 100%;
+    overflow: hidden;
     background: #080810;
     color: #ffffff;
     font-family: 'Inter', 'Outfit', system-ui, -apple-system, sans-serif;
