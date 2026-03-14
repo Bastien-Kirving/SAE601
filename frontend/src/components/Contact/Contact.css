@@ -448,17 +448,87 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .contact-container {
+        padding: 20px 16px;
+    }
+
+    .contact-title {
+        margin-bottom: 30px;
+    }
+
     .contact-card {
         flex-direction: column;
         padding: 30px 20px;
+        gap: 24px;
+    }
+
+    .contact-card:hover {
+        transform: none;
+    }
+
+    .contact-card:hover::before {
+        transform: rotate(15deg);
+    }
+
+    .contact-card:hover::after {
+        transform: rotate(-15deg);
+    }
+
+    .contact-form {
+        min-width: unset;
     }
 
     .contact-info {
+        min-width: unset;
         border-left: none;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
         padding-left: 0;
-        padding-top: 30px;
+        padding-top: 24px;
         align-items: center;
         text-align: center;
+    }
+
+    .theme-gwen .contact-info {
+        border-top-color: rgba(0, 0, 0, 0.1);
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-container {
+        padding: 16px 12px;
+    }
+
+    .contact-title {
+        margin-bottom: 20px;
+    }
+
+    .contact-card {
+        padding: 20px 16px;
+        gap: 20px;
+        border-radius: 14px;
+    }
+
+    .form-input {
+        padding: 12px 16px;
+        font-size: 0.95rem;
+    }
+
+    .form-textarea {
+        min-height: 100px;
+    }
+
+    .submit-btn {
+        font-size: 1rem;
+        padding: 12px 20px;
+    }
+
+    .contact-info {
+        font-size: 1rem;
+        padding-top: 20px;
+    }
+
+    .social-links {
+        gap: 12px;
+        margin-top: 16px;
     }
 }
