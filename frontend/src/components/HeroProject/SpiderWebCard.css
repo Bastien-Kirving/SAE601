@@ -217,20 +217,43 @@
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
     .spider-card {
-        max-width: 280px;
+        max-width: 320px;
     }
 
     .spider-card__content {
-        padding: 16px 14px;
+        padding: 18px 16px;
         gap: 8px;
+        width: 85%;
+    }
+
+    .spider-card__title {
+        font-size: 1rem;
+    }
+
+    .spider-card__desc {
+        font-size: 0.75rem;
     }
 }
 
 @media (max-width: 480px) {
     .spider-card {
-        max-width: 260px;
+        max-width: 100%;
+        width: 100%;
+        aspect-ratio: auto;
+        min-height: 380px;
+    }
+
+    .spider-card__content {
+        width: 90%;
+        padding: 20px 18px;
+    }
+
+    .spider-card__web {
+        width: 120%;
+        height: 120%;
     }
 }
+
 /* ============================================
    GWEN LIGHT MODE OVERRIDES
    ============================================ */
@@ -260,4 +283,3 @@
 .spider-card--gwen:hover .spider-card__tech-badge {
     background: rgba(0, 0, 0, 0.08);
 }
-

@@ -41,7 +41,7 @@ export default function HeroProject({ theme = 'miles' }) {
             <ProjectsBackground theme={theme} />
 
             {/* SECTION TITLE */}
-            <h1 className="hero-title reveal-title" style={{ position: 'absolute', top: '5%', left: '50%', zIndex: 20, width: '100%', pointerEvents: 'none' }}>
+            <h1 className="hero-title reveal-title">
                 <span className="hero-title-line hero-glitch" data-text="Projets">Projets</span>
             </h1>
 

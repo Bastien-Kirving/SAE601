@@ -29,6 +29,12 @@
 
 /* ---- Title reveal ---- */
 .reveal-title {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    z-index: 20;
+    width: 100%;
+    pointer-events: none;
     opacity: 0;
     transform: translateX(-50%) translateY(-30px);
     transition:
@@ -46,21 +52,48 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
+    .hero-project {
+        padding-top: 140px;
+    }
+
+    .reveal-title {
+        top: 40px;
+    }
+
     .projects-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        max-width: 700px;
+        gap: 20px;
+        max-width: 800px;
     }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     .hero-project {
-        padding: 100px 20px 60px;
+        padding: 120px 20px 60px;
+    }
+
+    .reveal-title {
+        top: 30px;
     }
 
     .projects-grid {
         grid-template-columns: 1fr;
-        gap: 12px;
-        max-width: 340px;
+        gap: 30px;
+        max-width: 450px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-project {
+        padding: 100px 15px 50px;
+    }
+
+    .reveal-title {
+        top: 25px;
+    }
+
+    .projects-grid {
+        max-width: 100%;
+        gap: 20px;
     }
 }
