@@ -312,25 +312,37 @@ const MultiverseBackground = memo(function MultiverseBackground({ theme = 'miles
     // preventing the useEffect from restarting the canvas animation loop
     // on every parent re-render (e.g. scroll events updating App state).
     const themeConfig = useMemo(() => {
-        let activeConfig = PALETTES[theme] || PALETTES.miles;
-        if (themeData) {
-            const pRgb = hexToRgbObj(themeData.primary_color);
-            const sRgb = hexToRgbObj(themeData.secondary_color);
-            const bcol = themeData.bg_color || '#000000';
-            activeConfig = {
-                bg: [bcol, bcol, '#000000'],
-                rings: [pRgb, sRgb, { r: 255, g: 255, b: 255 }, pRgb, sRgb],
-                lines: [pRgb, sRgb, { r: 255, g: 255, b: 255 }],
-                nebula: [
-                    { color: pRgb, x: -0.2, y: -0.1 },
-                    { color: sRgb, x: 0.2, y: 0.15 },
-                    { color: { r: 255, g: 255, b: 255 }, x: 0.0, y: -0.2 },
-                    { color: pRgb, x: -0.1, y: 0.2 }
-                ],
-                core: [{ r: 255, g: 255, b: 255 }, sRgb, pRgb, { r: 255, g: 255, b: 255 }]
-            };
-        }
-        return activeConfig;
+        const defaultPalette = PALETTES[theme] || PALETTES.miles;
+        if (!themeData) return defaultPalette;
+
+        const DEFAULTS = {
+            miles:  { primary: '#FF1744', secondary: '#E040FB', bg: '#0a0510' },
+            gwen:   { primary: '#E040FB', secondary: '#00E5FF', bg: '#FFFFFF'  },
+            glitch: { primary: '#00FF88', secondary: '#FF00FF', bg: '#000000'  },
+        };
+        const def = DEFAULTS[theme];
+        const isDefault = def
+            && themeData.primary_color?.toLowerCase() === def.primary.toLowerCase()
+            && themeData.secondary_color?.toLowerCase() === def.secondary.toLowerCase()
+            && themeData.bg_color?.toLowerCase() === def.bg.toLowerCase();
+
+        if (isDefault) return defaultPalette;
+
+        const pRgb = hexToRgbObj(themeData.primary_color);
+        const sRgb = hexToRgbObj(themeData.secondary_color);
+        const bcol = themeData.bg_color || '#000000';
+        return {
+            bg: [bcol, bcol, '#000000'],
+            rings: [pRgb, sRgb, { r: 255, g: 255, b: 255 }, pRgb, sRgb],
+            lines: [pRgb, sRgb, { r: 255, g: 255, b: 255 }],
+            nebula: [
+                { color: pRgb, x: -0.2, y: -0.1 },
+                { color: sRgb, x: 0.2, y: 0.15 },
+                { color: { r: 255, g: 255, b: 255 }, x: 0.0, y: -0.2 },
+                { color: pRgb, x: -0.1, y: 0.2 }
+            ],
+            core: [{ r: 255, g: 255, b: 255 }, sRgb, pRgb, { r: 255, g: 255, b: 255 }]
+        };
     }, [theme, themeData?.primary_color, themeData?.secondary_color, themeData?.bg_color]);
 
     // Update CSS variables for overlays

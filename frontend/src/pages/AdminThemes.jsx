@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { apiFetch } from '../api/apiFetch';
 import toast from '../components/Toast/toastManager';
 
-export default function AdminThemes({ token, onAuthError }) {
+export default function AdminThemes() {
     const [themes, setThemes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -28,9 +28,9 @@ export default function AdminThemes({ token, onAuthError }) {
 
     const handleResetDefaults = (themeId, themeName) => {
         const baseColors = {
-            'gwen': { primary: '#FF69B4', secondary: '#00FFFF', bg: '#FFFFFF' },
-            'miles': { primary: '#FF1744', secondary: '#E040FB', bg: '#0D0D0D' },
-            'glitch': { primary: '#00FF00', secondary: '#FF00FF', bg: '#000000' }
+            'miles': { primary: '#FF1744', secondary: '#E040FB', bg: '#0a0510', text: '#FFFFFF' },
+            'gwen':  { primary: '#E040FB', secondary: '#00E5FF', bg: '#FFFFFF',  text: '#000000' },
+            'glitch':{ primary: '#00FF88', secondary: '#FF00FF', bg: '#000000',  text: '#FFFFFF' }
         };
 
         const nameLower = themeName.toLowerCase();
@@ -46,7 +46,8 @@ export default function AdminThemes({ token, onAuthError }) {
                 ...t,
                 primary_color: defaults.primary,
                 secondary_color: defaults.secondary,
-                bg_color: defaults.bg
+                bg_color: defaults.bg,
+                text_color: defaults.text
             } : t));
             toast.success(`Couleurs réinitialisées pour ${themeName}`);
         }
@@ -98,6 +99,12 @@ export default function AdminThemes({ token, onAuthError }) {
                                 <label>Couleur de Fond Globale</label>
                                 <input type="color" value={theme.bg_color || '#000000'} onChange={e => handleThemeChange(theme.id, 'bg_color', e.target.value)} style={{ width: '100%', height: '40px', cursor: 'pointer' }} />
                                 <small>{theme.bg_color}</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Couleur du Texte</label>
+                                <input type="color" value={theme.text_color || '#ffffff'} onChange={e => handleThemeChange(theme.id, 'text_color', e.target.value)} style={{ width: '100%', height: '40px', cursor: 'pointer' }} />
+                                <small>{theme.text_color}</small>
                             </div>
 
                             <div className="form-actions-inline" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
