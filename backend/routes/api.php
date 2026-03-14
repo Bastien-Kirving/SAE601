@@ -52,4 +52,5 @@ $router->post('/api/upload', ['UploadController', 'upload'], ['AuthMiddleware'])
 // ============================================
 $router->post('/api/messages', ['MessageController', 'store']);               // public (contact)
 $router->get('/api/messages', ['MessageController', 'index'], ['AuthMiddleware']); // protégé (admin)
+$router->put('/api/messages/{id}', ['MessageController', 'markRead'], ['AuthMiddleware']); // protégé (admin)
 $router->delete('/api/messages/{id}', ['MessageController', 'destroy'], ['AuthMiddleware']); // protégé (admin)

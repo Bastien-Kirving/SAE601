@@ -21,6 +21,13 @@ export default function AdminMessages({ token, onAuthError }) {
         setLoading(false);
     };
 
+    const handleMarkRead = async (id) => {
+        const { ok } = await apiFetch(`/api/messages/${id}`, { method: 'PUT' });
+        if (ok) {
+            setMessages(prev => prev.map(m => m.id === id ? { ...m, is_read: 1 } : m));
+        }
+    };
+
     const handleDelete = async (id) => {
         if (!window.confirm('Voulez-vous vraiment supprimer ce message ?')) return;
 
@@ -55,13 +62,24 @@ export default function AdminMessages({ token, onAuthError }) {
                                     <strong>{msg.name}</strong> ({msg.email})
                                     <span className="msg-date">{new Date(msg.created_at).toLocaleString('fr-FR')}</span>
                                 </div>
-                                <button 
-                                    className="delete-btn" 
-                                    onClick={() => handleDelete(msg.id)}
-                                    title="Supprimer le message"
-                                >
-                                    Supprimer
-                                </button>
+                                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                    {!msg.is_read && (
+                                        <button
+                                            className="action-btn success"
+                                            onClick={() => handleMarkRead(msg.id)}
+                                            title="Marquer comme lu"
+                                        >
+                                            ✓ Lu
+                                        </button>
+                                    )}
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() => handleDelete(msg.id)}
+                                        title="Supprimer le message"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </div>
                             </div>
                             <h4>{msg.subject || 'Sans sujet'}</h4>
                             <div className="message-content">

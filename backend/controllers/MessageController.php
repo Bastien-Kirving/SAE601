@@ -72,6 +72,18 @@ class MessageController extends Controller
     }
 
     /**
+     * PUT /api/messages/{id} — Marquer un message comme lu
+     */
+    public function markRead(int $id): void
+    {
+        if ($this->messageModel->markAsRead($id)) {
+            $this->jsonResponse(['message' => 'Message marqué comme lu', 'id' => $id]);
+        } else {
+            $this->jsonResponse(['error' => 'Erreur lors de la mise à jour'], 500);
+        }
+    }
+
+    /**
      * DELETE /api/messages/{id} — Supprimer un message
      */
     public function destroy(int $id): void
