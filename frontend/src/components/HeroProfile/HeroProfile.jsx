@@ -293,14 +293,21 @@ export default function HeroProfile({ theme = 'miles' }) {
             </div>
 
             {/* Info Nodes */}
-            {settings.hero_nodes.map((node, idx) => (
+            {settings.hero_nodes.map((node, idx) => {
+                // Normalise la valeur : ajoute '%' si c'est un nombre sans unité
+                const normPos = (val, fallback) => {
+                    if (!val) return fallback;
+                    const s = String(val).trim();
+                    return /^\d+(\.\d+)?$/.test(s) ? s + '%' : s;
+                };
+                return (
                 <div
                     key={node.id || idx}
                     className="info-node reveal-element"
                     ref={(el) => (nodeRefs.current[idx] = el)}
                     style={{
-                        top: node.pos?.top || '50%',
-                        left: node.pos?.left || '50%',
+                        top: normPos(node.pos?.top, '50%'),
+                        left: normPos(node.pos?.left, '50%'),
                         transitionDelay: `${0.6 + idx * 0.15}s`,
                     }}
                 >
@@ -310,7 +317,8 @@ export default function HeroProfile({ theme = 'miles' }) {
                         <span>{node.detail}</span>
                     </div>
                 </div>
-            ))}
+                );
+            })}
         </div>
     );
 }

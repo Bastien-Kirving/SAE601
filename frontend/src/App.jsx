@@ -21,6 +21,7 @@ import DimensionalRift from './components/SpiderTransition/DimensionalRift';
 import SpotTransition from './components/SpotTransition/SpotTransition';
 import Contact from './components/Contact/Contact';
 import LeapOfFaith from './components/LeapOfFaith/LeapOfFaith';
+import Footer from './components/Footer/Footer';
 import SpiderWebClick from './components/SpiderWebClick';
 import Navbar from './components/Navbar/Navbar';
 import ToastContainer from './components/Toast/ToastContainer';
@@ -99,7 +100,7 @@ export default function App() {
                 <section className="section section-hero">
                     <div className="hero-content" ref={refs.heroContent}>
                         <h1 className="hero-title">
-                            <span className="hero-title-line hero-glitch" data-text="Portfolio">Portfolio</span>
+                            <span className="hero-title-line hero-glitch" data-text="Portfolio">BASTIEN LIEVRE</span>
                             <span className="hero-subtitle">Développeur Web Full-Stack</span>
                         </h1>
                         <div className="scroll-indicator">
@@ -137,6 +138,9 @@ export default function App() {
                 <section id="section-contact" className="section section-contact">
                     <Contact theme={theme} />
                 </section>
+
+                {/* Footer */}
+                <Footer theme={theme} />
             </div>
 
             <ToastContainer />

@@ -140,9 +140,9 @@ export default function Contact({ theme = 'miles' }) {
                 </form>
 
                 <div className="contact-info">
-                    <p>📧 contact@bastien-portfolio.fr</p>
-                    <p>📍 Troyes, France</p>
-                    <p>Disponibilité: Alternance 2024</p>
+                    <p>Bastien.lvrr@gmail.com</p>
+                    <p>📍 Grenoble, France</p>
+                    <p>Alternant chez Kiriving</p>
 
                     <div className="social-links">
                         <a href="https://github.com/votre-profil" target="_blank" rel="noreferrer" className="social-link">GH</a>
