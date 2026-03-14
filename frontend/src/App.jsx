@@ -25,6 +25,8 @@ import SpiderWebClick from './components/SpiderWebClick';
 import Navbar from './components/Navbar/Navbar';
 import ToastContainer from './components/Toast/ToastContainer';
 import './styles/app.css';
+import './styles/app.cursors.css';
+import './styles/app.glitch.css';
 
 export default function App() {
     // 1. Theme Logic

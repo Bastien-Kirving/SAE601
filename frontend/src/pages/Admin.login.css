@@ -1,0 +1,156 @@
+/* Admin.login.css — Variables CSS, scrollbar et page de connexion */
+
+:root {
+    --admin-bg-color: #0d0f14;
+    --admin-surface-color: rgba(15, 20, 30, 0.6);
+    --admin-surface-light: rgba(30, 40, 60, 0.5);
+    --admin-border-color: rgba(255, 255, 255, 0.1);
+    --admin-text-primary: #e2e8f0;
+    --admin-text-secondary: #94a3b8;
+
+    /* Couleurs d'accentuation Spider-Verse (Gwen/Miles Vibes) */
+    --admin-accent-red: #ff3366;
+    --admin-accent-blue: #00f0ff;
+    --admin-accent-glow: rgba(255, 51, 102, 0.4);
+
+    --admin-scrollbar-thumb: rgba(255, 51, 102, 0.3);
+}
+
+/* Base Scrollbar pour tout l'admin (si scroll nécessaire) */
+.admin-layout ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.admin-layout ::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.admin-layout ::-webkit-scrollbar-thumb {
+    background: var(--admin-scrollbar-thumb);
+    border-radius: 4px;
+}
+
+/* ----- LOG IN PAGE ----- */
+.admin-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--admin-bg-color);
+    background-image:
+        radial-gradient(ellipse at center, rgba(30, 35, 50, 0.5) 0%, transparent 80%),
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 2px, transparent 2px, transparent 4px);
+    font-family: 'Outfit', 'Segoe UI', Tahoma, Verdana, sans-serif;
+}
+
+.admin-login-card {
+    background: var(--admin-surface-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    padding: 3rem;
+    border-radius: 12px;
+    border: 1px solid var(--admin-border-color);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px var(--admin-accent-glow);
+    width: 100%;
+    max-width: 420px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet ligne glitch/neon haut de carte info */
+.admin-login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--admin-accent-blue), var(--admin-accent-red));
+}
+
+.admin-login-card h2 {
+    margin-bottom: 2rem;
+    color: #fff;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.admin-login-card .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.admin-login-card label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--admin-text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.admin-login-card input {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--admin-border-color);
+    color: var(--admin-text-primary);
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.admin-login-card input:focus {
+    outline: none;
+    border-color: var(--admin-accent-red);
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.3);
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1.1rem;
+    background: linear-gradient(45deg, var(--admin-accent-red), #cc0033);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
+}
+
+.login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 51, 102, 0.6);
+}
+
+.error-message {
+    color: #ff4d4d;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    background: rgba(255, 0, 0, 0.1);
+    padding: 0.8rem;
+    border-radius: 4px;
+    border-left: 3px solid #ff4d4d;
+}
+
+.back-home-link {
+    color: var(--admin-text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.back-home-link:hover {
+    color: var(--admin-accent-blue);
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+}

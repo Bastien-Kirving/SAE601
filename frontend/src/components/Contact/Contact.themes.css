@@ -1,0 +1,141 @@
+/* ============================================
+   Contact.themes.css — Surcharges de thèmes (Miles, Gwen, Glitch)
+   ============================================ */
+
+/* ============================================
+   THEME STYLING
+   ============================================ */
+
+/* Miles Theme (Red/Black) */
+.theme-miles {
+    --primary-color-alpha: rgba(var(--primary-color-rgb), 0.4);
+    --sky-top: #020108;
+    --sky-mid: #0a0318;
+    --sky-bot: #1a0520;
+    --sky-horizon: #2d0a1a;
+    --building-color: #080412;
+    --city-glow: rgba(255, 23, 68, 0.12);
+    --light-color: rgba(255, 180, 100, 0.8);
+}
+
+.theme-miles .form-input:focus {
+    border-color: #ff1744;
+    box-shadow: 0 0 10px rgba(255, 23, 68, 0.2);
+}
+
+/* Gwen Theme (Pink/White) */
+.theme-gwen {
+    --primary-color-alpha: rgba(var(--primary-color-rgb), 0.3);
+    --sky-top: #f5f0ff;
+    --sky-mid: #f0e5fc;
+    --sky-bot: #ecdaff;
+    --sky-horizon: #e8d0f8;
+    --building-color: #2a1a3a;
+    --city-glow: rgba(224, 64, 251, 0.08);
+    --light-color: rgba(255, 220, 255, 0.9);
+}
+
+.theme-gwen .city-light {
+    --light-color: rgba(100, 50, 120, 0.6);
+}
+
+.theme-gwen .contact-card {
+    background:
+        radial-gradient(circle at 40px 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        radial-gradient(circle at calc(100% - 40px) 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        rgba(255, 255, 255, 0.8);
+    border-color: rgba(224, 64, 251, 0.2);
+    box-shadow: 0 10px 40px rgba(224, 64, 251, 0.15);
+}
+
+.theme-gwen .form-input {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #111;
+}
+
+.theme-gwen .form-input::placeholder {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.theme-gwen .form-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(var(--primary-color-rgb), 0.2);
+}
+
+.theme-gwen .contact-info {
+    color: #333;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-gwen .social-link {
+    background: #fff;
+    color: #111;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+.theme-gwen .submit-btn,
+.theme-gwen .social-link:hover {
+    background: var(--primary-color);
+    color: #fff;
+}
+
+/* Glitch Theme (Green/Magenta) */
+.theme-glitch {
+    --primary-color-alpha: rgba(var(--primary-color-rgb), 0.3);
+    --sky-top: #050510;
+    --sky-mid: #0a0a18;
+    --sky-bot: #0f0f20;
+    --sky-horizon: #141428;
+    --building-color: #080812;
+    --city-glow: rgba(0, 255, 0, 0.15);
+    --light-color: rgba(0, 255, 0, 0.8);
+}
+
+.theme-glitch .contact-card {
+    background:
+        radial-gradient(circle at 40px 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        radial-gradient(circle at calc(100% - 40px) 0px, var(--primary-color-alpha) 0%, transparent 30px),
+        rgba(15, 15, 30, 0.85);
+    border-color: rgba(0, 255, 0, 0.3);
+    box-shadow:
+        0 0 30px rgba(0, 255, 0, 0.06),
+        0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.theme-glitch .contact-card:hover {
+    box-shadow:
+        -8px 8px 0px rgba(0, 255, 0, 0.2),
+        8px -8px 0px rgba(255, 0, 255, 0.15),
+        0 0 40px rgba(0, 255, 0, 0.1),
+        0 15px 50px rgba(0, 0, 0, 0.8);
+}
+
+.theme-glitch .contact-card .contact-card-bg {
+    background-image: radial-gradient(rgba(0, 255, 0, 0.08) 1.5px, transparent 1.5px);
+}
+
+.theme-glitch .form-input {
+    border-left-color: #00FF00;
+}
+
+.theme-glitch .form-input:focus {
+    border-color: #00FF00;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+.theme-glitch .submit-btn {
+    background: #00FF00;
+    color: #000;
+}
+
+.theme-glitch .submit-btn:hover {
+    box-shadow: 0 5px 20px rgba(0, 255, 0, 0.4);
+}
+
+.theme-glitch .social-link:hover {
+    background: rgba(0, 255, 0, 0.1);
+    border-color: #00FF00;
+    color: #00FF00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.25);
+}

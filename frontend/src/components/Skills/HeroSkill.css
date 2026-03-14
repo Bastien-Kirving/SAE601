@@ -3,75 +3,7 @@
    Dark minimalist + web motifs + glassmorphism
    ============================================ */
 
-/* ============================================
-   Custom Spider-Man Cursor
-   ============================================ */
-.hero-skill {
-    cursor: none;
-}
-
-.spider-cursor-dot {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 8px;
-    height: 8px;
-    background: var(--skill-primary, #FF1744);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    box-shadow: 0 0 8px var(--skill-glow, rgba(255, 23, 68, 0.6));
-    transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
-}
-
-.spider-cursor-dot.spider-cursor--hover {
-    width: 6px;
-    height: 6px;
-    background: #fff;
-}
-
-.spider-cursor-ring {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 36px;
-    height: 36px;
-    border: 1.5px solid rgba(255, 23, 68, 0.7);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    color: rgba(255, 23, 68, 0.5);
-    transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
-}
-
-.spider-cursor-ring.spider-cursor--hover {
-    width: 52px;
-    height: 52px;
-    border-color: rgba(255, 23, 68, 0.9);
-    color: rgba(255, 23, 68, 0.7);
-}
-
-.spider-cursor-web {
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    animation: cursorWebSpin 8s linear infinite;
-}
-
-.spider-cursor-ring.spider-cursor--hover .spider-cursor-web {
-    opacity: 1;
-}
-
-@keyframes cursorWebSpin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
+/* → Curseur Spider-Man dans HeroSkill.cursor.css */
 
 /* ---- Variables ---- */
 .hero-skill {
@@ -341,18 +273,6 @@
 /* ============================================
    Responsive
    ============================================ */
-
-/* Masque le curseur custom sur écrans tactiles */
-@media (hover: none) {
-    .hero-skill {
-        cursor: auto;
-    }
-
-    .spider-cursor-dot,
-    .spider-cursor-ring {
-        display: none;
-    }
-}
 
 @media (max-width: 900px) {
     .skills-split-layout {

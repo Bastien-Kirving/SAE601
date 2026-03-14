@@ -8,6 +8,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import './HeroProfile.css';
+import './HeroProfile.nodes.css';
 
 /* ============================================
    INFO NODES — Données personnelles

@@ -2,7 +2,10 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import ToastContainer from '../components/Toast/ToastContainer';
 import { setAuthErrorHandler } from '../api/apiFetch';
-import './Admin.css';
+import './Admin.login.css';
+import './Admin.layout.css';
+import './Admin.components.css';
+import './Admin.forms.css';
 
 const AdminMessages = lazy(() => import('./AdminMessages'));
 const AdminProjects = lazy(() => import('./AdminProjects'));

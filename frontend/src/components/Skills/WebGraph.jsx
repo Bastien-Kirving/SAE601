@@ -1,113 +1,33 @@
 /**
  * WebGraph.jsx — Toile d'araignée interactive des compétences
  *
- * Architecture performance :
- * - SVG pour le rendu (edges + nodes)
- * - RAF loop pour physique + positions (direct DOM, 0 re-render)
- * - CSS transitions pour l'animation de tissage et les hovers
- * - React state uniquement pour le panneau détail (selectedSkill)
- *
- * Interactions :
- * - Hover nœud   → fils connectés s'illuminent, nœud pulse
- * - Drag nœud    → physique de ressort (rappel vers position home)
- * - Clic skill   → panneau détail avec niveau
- * - Scroll trigger → fils se "tissent" un à un (stroke-dashoffset)
- * - Ondulation sinusoïdale permanente sur tous les nœuds
+ * Logic split into:
+ *   - webGraph.build.js             (THEME, buildGraph)
+ *   - useWebGraphInteraction.js     (hover + drag hook)
+ *   - WebGraphDetail.jsx            (skill detail panel)
  */
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import './WebGraph.css';
+import { THEME, buildGraph } from './webGraph.build.js';
+import { useWebGraphInteraction } from './useWebGraphInteraction.js';
+import { WebGraphDetail } from './WebGraphDetail.jsx';
 
-/* ============================================
-   Thèmes
-   ============================================ */
-const THEME = {
-  miles: { hex: '#FF1744', rgb: '255,23,68' },
-  gwen: { hex: '#E040FB', rgb: '224,64,251' },
-  glitch: { hex: '#00FF88', rgb: '0,255,136' },
-};
-
-/* ============================================
-   Construction du graphe
-   ============================================ */
-function buildGraph(categories, w, h) {
-  const cx = w / 2;
-  const cy = h / 2;
-  const n = categories.length;
-  const nodes = {};
-  const edges = [];
-
-  // Rayon adaptatif selon la taille du conteneur
-  const catRing = Math.min(w * 0.33, h * 0.36, 210);
-
-  categories.forEach(([cat, skills], i) => {
-    const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
-    const catId = `C:${cat}`;
-
-    nodes[catId] = {
-      id: catId,
-      type: 'category',
-      label: cat,
-      x: cx + Math.cos(angle) * catRing,
-      y: cy + Math.sin(angle) * catRing,
-      homeX: cx + Math.cos(angle) * catRing,
-      homeY: cy + Math.sin(angle) * catRing,
-      vx: 0, vy: 0,
-      r: 24,
-      phase: Math.random() * Math.PI * 2,
-    };
-
-    // Rayon des skills autour de leur catégorie
-    const skillRing = Math.min(65 + skills.length * 4, 115);
-
-    skills.forEach((skill, j) => {
-      // Décalage angulaire alterné pour éviter les superpositions
-      const sa = angle + (j / skills.length) * Math.PI * 2 + (i % 2 === 0 ? 0.4 : -0.4);
-      const sid = `S:${skill.id ?? skill.name}`;
-
-      nodes[sid] = {
-        id: sid,
-        type: 'skill',
-        label: skill.name,
-        icon: skill.icon,
-        level: skill.level,
-        catId,
-        skill: { ...skill, category: cat },
-        x: nodes[catId].x + Math.cos(sa) * skillRing,
-        y: nodes[catId].y + Math.sin(sa) * skillRing,
-        vx: 0, vy: 0,
-        r: 11 + (skill.level / 100) * 7,
-        phase: Math.random() * Math.PI * 2,
-      };
-
-      edges.push({
-        id: `${catId}>${sid}`,
-        source: catId,
-        target: sid,
-      });
-    });
-  });
-
-  return { nodes, edges };
-}
-
-/* ============================================
-   Composant principal
-   ============================================ */
 export default function WebGraph({ categories, theme }) {
   const containerRef = useRef(null);
   const svgRef = useRef(null);
   const rafRef = useRef(null);
   const graphRef = useRef({ nodes: {}, edges: [] });
-  const dragRef = useRef(null);
 
   const [selectedSkill, setSelectedSkill] = useState(null);
-  // Forcer un re-render après init pour avoir les nœuds dans le JSX
-  const [tick, setTick] = useState(0);
+  const [, setTick] = useState(0);
 
   const tc = THEME[theme] ?? THEME.miles;
   const hex = tc.hex;
   const rgb = tc.rgb;
+
+  /* ---- Interaction hook (hover + drag) ---- */
+  const { dragRef, onNodeEnter, onNodeLeave, onNodeMouseDown } = useWebGraphInteraction(graphRef, svgRef);
 
   /* ---- Init + resize ---- */
   const init = useCallback(() => {
@@ -115,7 +35,7 @@ export default function WebGraph({ categories, theme }) {
     if (!el) return;
     const { width: w, height: h } = el.getBoundingClientRect();
     graphRef.current = buildGraph(categories, w, h);
-    setTick(t => t + 1); // déclenche le re-render initial
+    setTick(t => t + 1);
   }, [categories]);
 
   useEffect(() => {
@@ -212,7 +132,6 @@ export default function WebGraph({ categories, theme }) {
       // Mise à jour DOM directe
       const svg = svgRef.current;
       if (svg) {
-        // Edges : mise à jour positions
         edges.forEach(e => {
           const src = nodes[e.source], tgt = nodes[e.target];
           if (!src || !tgt) return;
@@ -226,7 +145,6 @@ export default function WebGraph({ categories, theme }) {
           line.setAttribute('y2', tgt.y + wy);
         });
 
-        // Nodes : mise à jour transform (ondulation incluse)
         list.forEach(nd => {
           const g = svg.querySelector(`[data-nid="${nd.id}"]`);
           if (!g) return;
@@ -241,60 +159,7 @@ export default function WebGraph({ categories, theme }) {
 
     rafRef.current = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);
-
-  /* ---- Hover : manipulation DOM directe (0 re-render) ---- */
-  const onNodeEnter = useCallback((nodeId) => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    svg.querySelector(`[data-nid="${nodeId}"]`)?.classList.add('wg-node--hov');
-    graphRef.current.edges
-      .filter(e => e.source === nodeId || e.target === nodeId)
-      .forEach(e => svg.querySelector(`[data-eid="${e.id}"]`)?.classList.add('wg-edge--lit'));
-  }, []);
-
-  const onNodeLeave = useCallback((nodeId) => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    svg.querySelector(`[data-nid="${nodeId}"]`)?.classList.remove('wg-node--hov');
-    graphRef.current.edges
-      .filter(e => e.source === nodeId || e.target === nodeId)
-      .forEach(e => svg.querySelector(`[data-eid="${e.id}"]`)?.classList.remove('wg-edge--lit'));
-  }, []);
-
-  /* ---- Drag ---- */
-  const onNodeMouseDown = useCallback((e, nodeId) => {
-    e.stopPropagation();
-    const rect = svgRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const nd = graphRef.current.nodes[nodeId];
-    if (!nd) return;
-    nd.vx = 0; nd.vy = 0;
-    dragRef.current = {
-      id: nodeId,
-      ox: e.clientX - rect.left - nd.x,
-      oy: e.clientY - rect.top - nd.y,
-    };
-  }, []);
-
-  useEffect(() => {
-    const onMove = (e) => {
-      if (!dragRef.current) return;
-      const rect = svgRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const nd = graphRef.current.nodes[dragRef.current.id];
-      if (!nd) return;
-      nd.x = e.clientX - rect.left - dragRef.current.ox;
-      nd.y = e.clientY - rect.top - dragRef.current.oy;
-    };
-    const onUp = () => { dragRef.current = null; };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-    return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
-    };
-  }, []);
+  }, [dragRef]);
 
   /* ---- Rendu ---- */
   const { nodes, edges } = graphRef.current;
@@ -317,7 +182,6 @@ export default function WebGraph({ categories, theme }) {
             <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b" />
             <feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
-          {/* Halo pour les nœuds catégorie */}
           <radialGradient id="wg-cat-fill" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor={hex} stopOpacity="0.22" />
             <stop offset="100%" stopColor={hex} stopOpacity="0.04" />
@@ -332,7 +196,6 @@ export default function WebGraph({ categories, theme }) {
         {edges.map(e => {
           const src = nodes[e.source], tgt = nodes[e.target];
           if (!src || !tgt) return null;
-          const len = Math.hypot(tgt.x - src.x, tgt.y - src.y);
           return (
             <line
               key={e.id}
@@ -362,7 +225,6 @@ export default function WebGraph({ categories, theme }) {
               onClick={() => { if (!isCat) setSelectedSkill(nd.skill); }}
               style={{ cursor: 'grab' }}
             >
-              {/* Cercle de fond */}
               <circle
                 r={nd.r}
                 fill={isCat ? 'url(#wg-cat-fill)' : 'url(#wg-skill-fill)'}
@@ -370,7 +232,6 @@ export default function WebGraph({ categories, theme }) {
                 strokeWidth={isCat ? 1.8 : 1.2}
                 className="wg-node-circle"
               />
-              {/* Anneau pulse (hover) */}
               <circle
                 r={nd.r + 6}
                 fill="none"
@@ -380,17 +241,11 @@ export default function WebGraph({ categories, theme }) {
               />
 
               {isCat ? (
-                /* Label catégorie */
-                <text
-                  className="wg-cat-label"
-                  textAnchor="middle"
-                  dy="0.38em"
-                >
+                <text className="wg-cat-label" textAnchor="middle" dy="0.38em">
                   {nd.label.toUpperCase()}
                 </text>
               ) : (
                 <>
-                  {/* Icône skill */}
                   <text
                     textAnchor="middle"
                     dy="0.22em"
@@ -399,15 +254,9 @@ export default function WebGraph({ categories, theme }) {
                   >
                     {nd.icon}
                   </text>
-                  {/* Nom skill (visible au hover via CSS) */}
-                  <text
-                    textAnchor="middle"
-                    y={nd.r + 13}
-                    className="wg-skill-label"
-                  >
+                  <text textAnchor="middle" y={nd.r + 13} className="wg-skill-label">
                     {nd.label}
                   </text>
-                  {/* Arc de niveau */}
                   <circle
                     r={nd.r + 3}
                     fill="none"
@@ -426,41 +275,17 @@ export default function WebGraph({ categories, theme }) {
         })}
       </svg>
 
-      {/* ---- Hint ---- */}
       <p className="webgraph-hint">
         Drag · Hover · Clic pour les détails
       </p>
 
-      {/* ---- Panneau détail ---- */}
       {selectedSkill && (
-        <div
-          className="wg-detail-overlay"
-          onClick={() => setSelectedSkill(null)}
-        >
-          <div
-            className="wg-detail-card"
-            style={{ '--th': hex, '--th-rgb': rgb }}
-            onClick={e => e.stopPropagation()}
-          >
-            <button
-              className="wg-detail-close"
-              onClick={() => setSelectedSkill(null)}
-              aria-label="Fermer"
-            >
-              ✕
-            </button>
-            <div className="wg-detail-icon">{selectedSkill.icon}</div>
-            <div className="wg-detail-name">{selectedSkill.name}</div>
-            <div className="wg-detail-cat">{selectedSkill.category}</div>
-            <div className="wg-detail-bar-track">
-              <div
-                className="wg-detail-bar-fill"
-                style={{ width: `${selectedSkill.level}%` }}
-              />
-            </div>
-            <div className="wg-detail-pct">{selectedSkill.level}%</div>
-          </div>
-        </div>
+        <WebGraphDetail
+          skill={selectedSkill}
+          hex={hex}
+          rgb={rgb}
+          onClose={() => setSelectedSkill(null)}
+        />
       )}
     </div>
   );

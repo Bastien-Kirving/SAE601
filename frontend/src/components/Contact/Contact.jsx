@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import toast from '../Toast/toastManager';
 import './Contact.css';
+import './Contact.themes.css';
+import './Contact.background.css';
 
 export default function Contact({ theme = 'miles' }) {
     const containerRef = useRef(null);

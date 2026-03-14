@@ -11,6 +11,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import SkillGrid from './SkillGrid';
+import './HeroSkill.cursor.css';
 import './HeroSkill.css';
 
 /* ============================================

@@ -1,0 +1,203 @@
+/* Admin.layout.css — Dashboard layout, sidebar, header, burger */
+
+/* ----- ADMIN DASHBOARD LAYOUT ----- */
+.admin-layout {
+    display: flex;
+    height: 100%;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    background-color: var(--admin-bg-color);
+    color: var(--admin-text-primary);
+    background-image:
+        radial-gradient(circle at top right, rgba(0, 240, 255, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at bottom left, rgba(255, 51, 102, 0.05) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+
+.admin-sidebar {
+    width: 260px;
+    background: var(--admin-surface-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--admin-border-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.admin-brand {
+    padding: 2rem 1.5rem;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #fff;
+    text-align: center;
+    letter-spacing: 2px;
+    border-bottom: 1px solid var(--admin-border-color);
+    background: linear-gradient(90deg, #fff, var(--admin-text-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    text-transform: uppercase;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 0;
+    flex: 1;
+}
+
+.admin-nav a {
+    color: var(--admin-text-secondary);
+    text-decoration: none;
+    padding: 1rem 2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+    display: flex;
+    align-items: center;
+}
+
+.admin-nav a:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.03);
+    padding-left: 2.5rem;
+}
+
+.admin-nav a.active {
+    background: linear-gradient(90deg, rgba(255, 51, 102, 0.1) 0%, transparent 100%);
+    color: #fff;
+    border-left-color: var(--admin-accent-red);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.logout-btn {
+    padding: 1.2rem;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--admin-text-secondary);
+    border: none;
+    border-top: 1px solid var(--admin-border-color);
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+    letter-spacing: 1px;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 51, 102, 0.1);
+    color: var(--admin-accent-red);
+}
+
+.admin-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.admin-header {
+    background: var(--admin-surface-color);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--admin-border-color);
+    padding: 1rem 2.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.admin-header h2 {
+    margin: 0;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.admin-body {
+    padding: 2.5rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Base Titles in body */
+.admin-body h3 {
+    color: #fff;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.admin-body h4 {
+    color: var(--admin-accent-blue);
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Subtitle paragraphs */
+.admin-subtitle {
+    color: var(--admin-text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+/* Dashboard welcome */
+.admin-body>div>h3 {
+    font-size: 1.6rem;
+}
+
+.admin-body>div>p {
+    color: var(--admin-text-secondary);
+    font-size: 1rem;
+}
+
+/* ----- ADMIN BURGER BUTTON ----- */
+.admin-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 100;
+}
+
+.burger-line {
+    width: 2rem;
+    height: 0.25rem;
+    background: var(--admin-accent-red);
+    border-radius: 10px;
+    transition: all 0.3s linear;
+    position: relative;
+    transform-origin: 1px;
+}
+
+/* ----- SIDEBAR OVERLAY ----- */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.sidebar-open .sidebar-overlay {
+    opacity: 1;
+    visibility: visible;
+}
