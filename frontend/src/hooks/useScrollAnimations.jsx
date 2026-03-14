@@ -10,8 +10,8 @@ export function useScrollAnimations() {
         multiverse: useRef(null),
         glitch: useRef(null),
         heroContent: useRef(null),
-        glitchBurst: useRef(null), // direct DOM ref — avoids React state update
-        scrollContainer: useRef(null), // conteneur de scroll interne (évite le scroll window)
+        glitchBurst: useRef(null),
+        scrollContainer: useRef(null), // conteneur de scroll interne
     };
 
     // Internal state refs
@@ -72,12 +72,30 @@ export function useScrollAnimations() {
         const container = refs.scrollContainer.current;
         if (!container) return;
 
+        // Polyfill window.scrollY → container.scrollTop
+        // Les autres composants (DimensionalRift, SpotTransition, LeapOfFaith…)
+        // continuent d'utiliser window.scrollY sans modification
+        Object.defineProperty(window, 'scrollY', {
+            get: () => refs.scrollContainer.current?.scrollTop ?? 0,
+            configurable: true,
+        });
+        Object.defineProperty(window, 'pageYOffset', {
+            get: () => refs.scrollContainer.current?.scrollTop ?? 0,
+            configurable: true,
+        });
+
         // Initial opacity
         updateOpacities();
 
-        container.addEventListener('scroll', handleScroll, { passive: true });
+        const onScroll = () => {
+            handleScroll();
+            // Re-dispatcher sur window pour les composants qui écoutent window scroll
+            window.dispatchEvent(new Event('scroll'));
+        };
+
+        container.addEventListener('scroll', onScroll, { passive: true });
         return () => {
-            container.removeEventListener('scroll', handleScroll);
+            container.removeEventListener('scroll', onScroll);
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
     }, [handleScroll, updateOpacities]);
