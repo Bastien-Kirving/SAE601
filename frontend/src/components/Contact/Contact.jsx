@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import toast from '../Toast/toastManager';
 import './Contact.css';
 
 export default function Contact({ theme = 'miles' }) {
+    const containerRef = useRef(null);
+    const [isVisible, setIsVisible] = useState(false);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -10,6 +12,15 @@ export default function Contact({ theme = 'miles' }) {
         content: ''
     });
     const [status, setStatus] = useState('idle'); // 'idle', 'loading', 'success', 'error'
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => setIsVisible(entry.isIntersecting),
+            { threshold: 0.1 }
+        );
+        if (containerRef.current) observer.observe(containerRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -43,7 +54,7 @@ export default function Contact({ theme = 'miles' }) {
     };
 
     return (
-        <div className={`contact-container theme-${theme}`}>
+        <div className={`contact-container theme-${theme} ${isVisible ? 'contact--visible' : ''}`} ref={containerRef}>
             {/* INVERTED NYC BACKGROUND */}
             <div className="contact-background-wrapper">
                 <div className="city-glow-overlay" />
