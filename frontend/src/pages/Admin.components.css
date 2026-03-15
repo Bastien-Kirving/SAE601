@@ -305,3 +305,20 @@
     color: var(--admin-accent-red);
     border: 1px solid rgba(255, 51, 102, 0.3);
 }
+
+/* ----- RESPONSIVE ----- */
+@media (max-width: 600px) {
+    .admin-header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .admin-header-actions .action-btn {
+        width: 100%;
+        text-align: center;
+        font-size: 0.75rem;
+        padding: 0.5rem 1rem;
+        letter-spacing: 0.5px;
+    }
+}
