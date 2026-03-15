@@ -12,9 +12,12 @@
 // En production (Infomaniak) : ce fichier est dans /web/api/index.php
 // Le code backend privé est dans /backend/ (hors racine web)
 // → les chemins remontent de 2 niveaux : /web/api/ → /web/ → /
-$backendPath = is_dir(__DIR__ . '/../../backend')
-    ? __DIR__ . '/../../backend'   // Production : /backend/ hors web root
-    : __DIR__ . '/..'              // Local : backend/public/../
+$backendPath = is_dir(__DIR__ . '/controllers')
+    ? __DIR__                          // Production : index.php à la racine du dossier API
+    : (is_dir(__DIR__ . '/../../backend')
+        ? __DIR__ . '/../../backend'   // Production : /backend/ hors web root
+        : __DIR__ . '/..'              // Local : backend/public/../
+      )
 ;
 
 require_once $backendPath . '/config/config.php';
