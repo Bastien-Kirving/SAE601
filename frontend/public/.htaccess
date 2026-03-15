@@ -8,6 +8,12 @@
 
 Options -Indexes
 
+# MIME types explicites (requis sur certains hébergements partagés)
+AddType application/javascript .js .mjs
+AddType text/css .css
+AddType image/webp .webp
+AddType image/svg+xml .svg
+
 RewriteEngine On
 
 # Servir les fichiers statiques existants directement
