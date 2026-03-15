@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Déployer sur Infomaniak (FTP)
+      - name: Déployer le code backend (hors public/)
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_HOST }}
@@ -58,3 +58,14 @@ jobs:
             **/tests/**
             **/phpunit.phar
             **/phpunit.xml
+
+      - name: Déployer index.php et .htaccess à la racine de l'API
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./backend/public/
+          server-dir: ${{ secrets.FTP_BACKEND_DIR }}
+          exclude: |
+            **/uploads/**
