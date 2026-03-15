@@ -1,24 +1,18 @@
 <?php
 /**
  * index.php — Point d'entrée de l'API REST
- * 
+ *
  * Toutes les requêtes HTTP passent par ce fichier
  * grâce au .htaccess (RewriteRule).
+ *
+ * En production : ce fichier est déployé à la racine de sites/bastien-lievre.com/api/
+ * Le dossier controllers/, routes/, etc. sont au même niveau.
  */
 
 // ============================================
 // 1. Configuration
 // ============================================
-// En production (Infomaniak) : ce fichier est dans /web/api/index.php
-// Le code backend privé est dans /backend/ (hors racine web)
-// → les chemins remontent de 2 niveaux : /web/api/ → /web/ → /
-$backendPath = is_dir(__DIR__ . '/controllers')
-    ? __DIR__                          // Production : index.php à la racine du dossier API
-    : (is_dir(__DIR__ . '/../../backend')
-        ? __DIR__ . '/../../backend'   // Production : /backend/ hors web root
-        : __DIR__ . '/..'              // Local : backend/public/../
-      )
-;
+$backendPath = __DIR__;
 
 require_once $backendPath . '/config/config.php';
 
@@ -29,12 +23,9 @@ $requestOrigin    = $_SERVER['HTTP_ORIGIN'] ?? '';
 $allowedList      = array_map('trim', explode(',', ALLOWED_ORIGINS));
 
 if (in_array($requestOrigin, $allowedList, true)) {
-    // Origine explicitement autorisée → on la renvoie telle quelle
     header('Access-Control-Allow-Origin: ' . $requestOrigin);
     header('Vary: Origin');
 }
-// Si l'origine n'est pas dans la liste, aucun header CORS n'est envoyé
-// → le navigateur bloquera la requête cross-origin (comportement voulu).
 
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
