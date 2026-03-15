@@ -84,7 +84,14 @@ class UploadController extends Controller
         $newName = uniqid('upload_', true) . '.' . $extension;
 
         // 8. Création du répertoire cible si inexistant
-        $targetDir = __DIR__ . '/../public/uploads/' . $folder . '/';
+        // En production : backend est hors du web root, uploads doivent aller dans bastien-lievre.com/api/uploads/
+        // En local      : backend/public/ est le web root
+        $sitesDir = dirname(dirname(__DIR__)); // .../sites (prod) ou f:/SAE601 (local)
+        if (is_dir($sitesDir . '/bastien-lievre.com')) {
+            $targetDir = $sitesDir . '/bastien-lievre.com/api/uploads/' . $folder . '/';
+        } else {
+            $targetDir = __DIR__ . '/../public/uploads/' . $folder . '/';
+        }
         if (!is_dir($targetDir)) {
             mkdir($targetDir, 0755, true);
         }
