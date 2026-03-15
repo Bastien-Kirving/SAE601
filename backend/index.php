@@ -29,7 +29,15 @@ register_shutdown_function(function () {
 // ============================================
 // 1. Configuration
 // ============================================
-$backendPath = __DIR__;
+// Détection du chemin backend selon la structure du serveur :
+// - Soit index.php est à la racine du backend (local ou tout-en-un)
+// - Soit index.php est dans un dossier web séparé et le code est dans sites/backend/
+$backendPath = is_file(__DIR__ . '/config/config.php')
+    ? __DIR__
+    : (is_dir(__DIR__ . '/../../backend')
+        ? __DIR__ . '/../../backend'
+        : __DIR__ . '/..'
+      );
 
 require_once $backendPath . '/config/config.php';
 
