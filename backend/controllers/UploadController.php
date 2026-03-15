@@ -92,7 +92,7 @@ class UploadController extends Controller
 
         // 9. Déplacement sécurisé
         if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-            $publicUrl = '/uploads/' . $folder . '/' . $newName;
+            $publicUrl = '/api/uploads/' . $folder . '/' . $newName;
             $this->jsonResponse([
                 'url'     => $publicUrl,
                 'message' => 'Fichier uploadé avec succès',
