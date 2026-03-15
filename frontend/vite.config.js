@@ -10,6 +10,13 @@ export default defineConfig(({ command }) => ({
     server: command === 'serve' ? {
         port: 3000,
         proxy: {
+            // Fichiers uploadés : /api/uploads/... → localhost:8080/uploads/...
+            // (les fichiers sont dans backend/public/uploads/, sans préfixe /api)
+            '/api/uploads': {
+                target: 'http://localhost:8080',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/api/, ''),
+            },
             '/api': {
                 target: 'http://localhost:8080',
                 changeOrigin: true,

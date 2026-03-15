@@ -16,6 +16,9 @@ export default function AdminProjects({ token, onAuthError }) {
         is_active: 1,
         sort_order: 0
     });
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState('');
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         fetchProjects();
@@ -42,6 +45,8 @@ export default function AdminProjects({ token, onAuthError }) {
             is_active: project.is_active,
             sort_order: project.sort_order
         });
+        setImageFile(null);
+        setImagePreview(project.image_url || '');
     };
 
     const handleCreateNew = () => {
@@ -55,6 +60,35 @@ export default function AdminProjects({ token, onAuthError }) {
             is_active: 1,
             sort_order: 0
         });
+        setImageFile(null);
+        setImagePreview('');
+    };
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const uploadImage = async () => {
+        const formDataUpload = new FormData();
+        formDataUpload.append('file', imageFile);
+        formDataUpload.append('folder', 'projects');
+
+        const authToken = localStorage.getItem('adminToken');
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {},
+            body: formDataUpload,
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            toast.error(data.error || "Erreur lors de l'upload de l'image");
+            return null;
+        }
+        return data.url;
     };
 
     const handleDelete = async (id) => {
@@ -68,13 +102,26 @@ export default function AdminProjects({ token, onAuthError }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        let finalData = { ...formData };
+
+        if (imageFile) {
+            setUploading(true);
+            const uploadedUrl = await uploadImage();
+            setUploading(false);
+            if (!uploadedUrl) return;
+            finalData.image_url = uploadedUrl;
+        }
+
         const url = editingProject === 'new' ? '/api/projects' : `/api/projects/${editingProject}`;
         const method = editingProject === 'new' ? 'POST' : 'PUT';
 
-        const { ok } = await apiFetch(url, { method, body: formData });
+        const { ok } = await apiFetch(url, { method, body: finalData });
         if (ok) {
             toast.success(editingProject === 'new' ? 'Projet créé !' : 'Projet mis à jour !');
             setEditingProject(null);
+            setImageFile(null);
+            setImagePreview('');
             fetchProjects();
         }
     };
@@ -101,8 +148,34 @@ export default function AdminProjects({ token, onAuthError }) {
                             <textarea value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} rows="4"></textarea>
                         </div>
                         <div className="form-group">
-                            <label>Image URL (Ex: /images/projet.jpg)</label>
-                            <input type="text" value={formData.image_url} onChange={e => setFormData({ ...formData, image_url: e.target.value })} />
+                            <label>Image du projet</label>
+                            <div className="image-upload-area">
+                                {imagePreview && (
+                                    <img src={imagePreview} alt="Aperçu" className="image-preview" />
+                                )}
+                                <input
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                                    onChange={handleImageChange}
+                                    className="file-input"
+                                />
+                                {imageFile && (
+                                    <span className="file-name">{imageFile.name}</span>
+                                )}
+                            </div>
+                            <label style={{ marginTop: '0.5rem', fontSize: '0.8rem', opacity: 0.7 }}>
+                                Ou coller une URL directement
+                            </label>
+                            <input
+                                type="text"
+                                value={formData.image_url}
+                                onChange={e => {
+                                    setFormData({ ...formData, image_url: e.target.value });
+                                    setImagePreview(e.target.value);
+                                    setImageFile(null);
+                                }}
+                                placeholder="/api/uploads/projects/mon-image.jpg"
+                            />
                         </div>
                         <div className="form-group-row">
                             <div className="form-group">
@@ -125,8 +198,10 @@ export default function AdminProjects({ token, onAuthError }) {
                             </div>
                         </div>
                         <div className="form-actions">
-                            <button type="submit" className="action-btn submit">Sauvegarder</button>
-                            <button type="button" onClick={() => setEditingProject(null)} className="action-btn cancel">Annuler</button>
+                            <button type="submit" className="action-btn submit" disabled={uploading}>
+                                {uploading ? 'Upload en cours...' : 'Sauvegarder'}
+                            </button>
+                            <button type="button" onClick={() => { setEditingProject(null); setImageFile(null); setImagePreview(''); }} className="action-btn cancel">Annuler</button>
                         </div>
                     </form>
                 </div>

@@ -253,6 +253,33 @@
     border: 1px solid var(--admin-border-color);
 }
 
+/* --- Upload image projet --- */
+.image-upload-area {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.image-preview {
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--admin-border-color);
+}
+
+.file-input {
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.file-name {
+    font-size: 0.8rem;
+    opacity: 0.65;
+    font-style: italic;
+}
+
 .table-actions {
     white-space: nowrap;
 }
