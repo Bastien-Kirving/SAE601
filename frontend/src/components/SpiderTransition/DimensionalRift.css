@@ -92,6 +92,12 @@
     }
 }
 
+@media (max-width: 768px) {
+    .dimensional-rift {
+        height: 200vh;
+    }
+}
+
 /* Vignette effect */
 .dimensional-rift__canvas::after {
     content: '';

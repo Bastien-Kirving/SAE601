@@ -257,6 +257,52 @@
     }
 }
 
+/* ---- Touch / Mobile : états actifs (équivalent :hover) ---- */
+@media (hover: none) {
+    .spider-card__web {
+        animation-duration: 90s; /* rotation ralentie pour économiser la batterie */
+    }
+
+    .spider-card:active .spider-card__web {
+        transform: translate(-50%, -50%) scale(1.08);
+        animation-play-state: paused;
+    }
+
+    .spider-card:active .spider-card__content {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .spider-card:active .spider-card__image-icon {
+        opacity: 1;
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    .spider-card:active .spider-card__link {
+        opacity: 1;
+        text-shadow: 0 0 12px currentColor;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spider-card__web {
+        animation: none;
+    }
+
+    .spider-card {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .hero-project--visible .spider-card {
+        animation: none;
+        opacity: 1;
+        transform: none;
+    }
+}
+
 /* ============================================
    GWEN LIGHT MODE OVERRIDES
    ============================================ */

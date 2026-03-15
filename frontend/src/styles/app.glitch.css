@@ -186,6 +186,20 @@
     /* Glitch every 2s */
 }
 
+@media (max-width: 768px) {
+    .hero-glitch {
+        animation-duration: 8s; /* moins agressif sur mobile */
+    }
+
+    .hero-glitch::before {
+        animation-duration: 16s;
+    }
+
+    .hero-glitch::after {
+        animation-duration: 12s;
+    }
+}
+
 .hero-glitch::before,
 .hero-glitch::after {
     content: attr(data-text);
@@ -295,6 +309,27 @@
     100% {
         clip-path: inset(0 0 0 0);
         transform: translate(0);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-glitch,
+    .hero-glitch::before,
+    .hero-glitch::after {
+        animation: none;
+        transform: none;
+        clip-path: none;
+        opacity: 1;
+    }
+
+    .glitch-burst-overlay.active {
+        animation: none;
+    }
+
+    .glitch-burst-overlay.active .glitch-burst-line,
+    .glitch-burst-overlay.active .glitch-burst-flash {
+        animation: none;
         opacity: 0;
     }
 }

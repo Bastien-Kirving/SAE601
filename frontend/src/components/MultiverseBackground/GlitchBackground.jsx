@@ -137,6 +137,7 @@ const GlitchBackground = memo(function GlitchBackground({ opacity = 1, theme = '
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
+        let isVisible = true;
         let config = PALETTES[theme] || PALETTES.miles;
         if (themeData) {
             const p = hexToRgbObj(themeData.primary_color);
@@ -170,9 +171,14 @@ const GlitchBackground = memo(function GlitchBackground({ opacity = 1, theme = '
         const container = canvas.parentElement;
         if (container) container.style.backgroundColor = config.bg;
 
+        // Réduire les entités sur mobile
+        const isMobile = window.innerWidth <= 768;
+        const particleCount  = isMobile ? 12 : PARTICLE_COUNT;
+        const energyDotCount = isMobile ? 3  : ENERGY_DOT_COUNT;
+
         // Entities
-        const dots = Array.from({ length: PARTICLE_COUNT }, () => new FloatingDot(W, H, config.particles));
-        const energyDots = Array.from({ length: ENERGY_DOT_COUNT }, () => {
+        const dots = Array.from({ length: particleCount }, () => new FloatingDot(W, H, config.particles));
+        const energyDots = Array.from({ length: energyDotCount }, () => {
             const e = new EnergyDot();
             e.t = Math.random(); // stagger
             return e;
@@ -187,7 +193,18 @@ const GlitchBackground = memo(function GlitchBackground({ opacity = 1, theme = '
         let startTime = null;
         let lastTime = 0;
 
+        // Pause le rendu quand le composant est hors écran
+        const visibilityObserver = new IntersectionObserver(
+            ([entry]) => { isVisible = entry.isIntersecting; },
+            { threshold: 0 }
+        );
+        visibilityObserver.observe(canvas);
+
         function animate(timestamp) {
+            if (!isVisible) {
+                animRef.current = requestAnimationFrame(animate);
+                return;
+            }
             if (!startTime) startTime = timestamp;
             const time = (timestamp - startTime) / 1000;
             const dt = Math.min(0.05, time - lastTime);
@@ -304,6 +321,7 @@ const GlitchBackground = memo(function GlitchBackground({ opacity = 1, theme = '
         return () => {
             cancelAnimationFrame(animRef.current);
             window.removeEventListener('resize', resize);
+            visibilityObserver.disconnect();
         };
     }, [theme, themeData]);
 

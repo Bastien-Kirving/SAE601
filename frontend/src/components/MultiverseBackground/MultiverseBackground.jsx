@@ -93,14 +93,23 @@ const MultiverseBackground = memo(function MultiverseBackground({ theme = 'miles
         }
         resize();
 
+        // Réduire les entités sur mobile pour économiser les ressources
+        const isMobile = window.innerWidth <= 768;
+        const ringCount     = isMobile ? 8  : RING_COUNT;
+        const lineCount     = isMobile ? 15 : SPEED_LINE_COUNT;
+        const particleCount = isMobile ? 15 : PARTICLE_COUNT;
+        const beamCount     = isMobile ? 4  : BEAM_COUNT;
+
         // Init entities with CURRENT THEME COLORS
-        const rings = Array.from({ length: RING_COUNT }, () => new TunnelRing(cx, cy, maxR, themeConfig.rings));
-        const lines = Array.from({ length: SPEED_LINE_COUNT }, () => new SpeedLine(cx, cy, maxR, themeConfig.lines));
-        const particles = Array.from({ length: PARTICLE_COUNT }, () => new WarpParticle(cx, cy, maxR, themeConfig.rings));
-        const beams = Array.from({ length: BEAM_COUNT }, () => new EnergyBeam(cx, cy, maxR, themeConfig.lines));
+        const rings = Array.from({ length: ringCount }, () => new TunnelRing(cx, cy, maxR, themeConfig.rings));
+        const lines = Array.from({ length: lineCount }, () => new SpeedLine(cx, cy, maxR, themeConfig.lines));
+        const particles = Array.from({ length: particleCount }, () => new WarpParticle(cx, cy, maxR, themeConfig.rings));
+        const beams = Array.from({ length: beamCount }, () => new EnergyBeam(cx, cy, maxR, themeConfig.lines));
         entitiesRef.current = { rings, lines, particles, beams };
 
         const handleMouse = (e) => {
+            // Pas de tracking souris sur mobile (économise du CPU et n'a aucun sens tactile)
+            if (window.innerWidth <= 768) return;
             mouseRef.current.x = e.clientX / W;
             mouseRef.current.y = e.clientY / H;
         };

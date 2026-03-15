@@ -28,6 +28,12 @@
     pointer-events: none;
 }
 
+@media (max-width: 768px) {
+    .spot-transition {
+        height: 150vh;
+    }
+}
+
 /* Canvas stays fixed while section scrolls through */
 .spot-transition__canvas {
     position: sticky;
