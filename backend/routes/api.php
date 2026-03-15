@@ -9,7 +9,7 @@
 // ============================================
 // AUTH (public)
 // ============================================
-$router->post('/api/login', ['AuthController', 'login']);
+$router->post('/api/login', ['AuthController', 'login'], ['RateLimitMiddleware']);
 $router->post('/api/register', ['AuthController', 'register']);
 $router->get('/api/auth/verify', ['AuthController', 'verify'], ['AuthMiddleware']); // protégé
 
@@ -50,7 +50,7 @@ $router->post('/api/upload', ['UploadController', 'upload'], ['AuthMiddleware'])
 // ============================================
 // MESSAGES
 // ============================================
-$router->post('/api/messages', ['MessageController', 'store']);               // public (contact)
+$router->post('/api/messages', ['MessageController', 'store'], ['RateLimitMiddleware']); // public (contact)
 $router->get('/api/messages', ['MessageController', 'index'], ['AuthMiddleware']); // protégé (admin)
 $router->put('/api/messages/{id}', ['MessageController', 'markRead'], ['AuthMiddleware']); // protégé (admin)
 $router->delete('/api/messages/{id}', ['MessageController', 'destroy'], ['AuthMiddleware']); // protégé (admin)

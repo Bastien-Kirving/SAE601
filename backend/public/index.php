@@ -12,9 +12,19 @@
 require_once __DIR__ . '/../config/config.php';
 
 // ============================================
-// 2. Headers CORS (pour que React puisse appeler l'API)
+// 2. Headers CORS (origines définies dans .env)
 // ============================================
-header('Access-Control-Allow-Origin: ' . ALLOWED_ORIGINS);
+$requestOrigin    = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowedList      = array_map('trim', explode(',', ALLOWED_ORIGINS));
+
+if (in_array($requestOrigin, $allowedList, true)) {
+    // Origine explicitement autorisée → on la renvoie telle quelle
+    header('Access-Control-Allow-Origin: ' . $requestOrigin);
+    header('Vary: Origin');
+}
+// Si l'origine n'est pas dans la liste, aucun header CORS n'est envoyé
+// → le navigateur bloquera la requête cross-origin (comportement voulu).
+
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json; charset=utf-8');
@@ -33,6 +43,7 @@ require_once __DIR__ . '/../core/Controller.php';
 require_once __DIR__ . '/../core/Model.php';
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../middleware/RateLimitMiddleware.php';
 
 // Models
 require_once __DIR__ . '/../models/User.php';

@@ -6,6 +6,7 @@ frontend/dist/
 
 # Sensitive config — Ne jamais commiter
 backend/config/config.php
+backend/.env
 
 # Fichiers de debug/test à la racine
 test_db.php
