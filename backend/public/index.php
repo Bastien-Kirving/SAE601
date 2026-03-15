@@ -69,6 +69,7 @@ require_once $backendPath . '/controllers/ThemeController.php';
 require_once $backendPath . '/controllers/MessageController.php';
 require_once $backendPath . '/controllers/SettingController.php';
 require_once $backendPath . '/controllers/UploadController.php';
+require_once $backendPath . '/controllers/StatsController.php';
 
 // ============================================
 // 4. Initialiser le routeur et charger les routes

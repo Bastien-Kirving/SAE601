@@ -7,6 +7,7 @@ import './Admin.layout.css';
 import './Admin.components.css';
 import './Admin.forms.css';
 
+const AdminDashboard = lazy(() => import('./AdminDashboard'));
 const AdminMessages = lazy(() => import('./AdminMessages'));
 const AdminProjects = lazy(() => import('./AdminProjects'));
 const AdminSkills = lazy(() => import('./AdminSkills'));
@@ -69,7 +70,7 @@ export default function Admin() {
                 <div className="admin-body">
                     <Suspense fallback={<div style={{ padding: '2rem', opacity: 0.5 }}>Chargement...</div>}>
                         <Routes>
-                            <Route path="dashboard" element={<div><h3>Vue d'ensemble</h3><p>Sélectionnez une rubrique à gauche.</p></div>} />
+                            <Route path="dashboard" element={<AdminDashboard token={token} />} />
                             <Route path="projects" element={<AdminProjects token={token} onAuthError={handleLogout} />} />
                             <Route path="skills" element={<AdminSkills token={token} onAuthError={handleLogout} />} />
                             <Route path="messages" element={<AdminMessages token={token} onAuthError={handleLogout} />} />

@@ -36,6 +36,11 @@ $router->get('/api/smtp-diag', function() {
 });
 
 // ============================================
+// STATS (Dashboard admin)
+// ============================================
+$router->get('/api/stats', ['StatsController', 'index'], ['AuthMiddleware']); // protégé
+
+// ============================================
 // AUTH (public)
 // ============================================
 $router->post('/api/login', ['AuthController', 'login'], ['RateLimitMiddleware']);
