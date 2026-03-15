@@ -9,7 +9,15 @@
 // ============================================
 // 1. Configuration
 // ============================================
-require_once __DIR__ . '/../config/config.php';
+// En production (Infomaniak) : ce fichier est dans /web/api/index.php
+// Le code backend privé est dans /backend/ (hors racine web)
+// → les chemins remontent de 2 niveaux : /web/api/ → /web/ → /
+$backendPath = is_dir(__DIR__ . '/../../backend')
+    ? __DIR__ . '/../../backend'   // Production : /backend/ hors web root
+    : __DIR__ . '/..'              // Local : backend/public/../
+;
+
+require_once $backendPath . '/config/config.php';
 
 // ============================================
 // 2. Headers CORS (origines définies dans .env)
@@ -38,35 +46,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // ============================================
 // 3. Autoload des fichiers
 // ============================================
-require_once __DIR__ . '/../core/Router.php';
-require_once __DIR__ . '/../core/Controller.php';
-require_once __DIR__ . '/../core/Model.php';
-require_once __DIR__ . '/../config/Database.php';
-require_once __DIR__ . '/../middleware/AuthMiddleware.php';
-require_once __DIR__ . '/../middleware/RateLimitMiddleware.php';
+require_once $backendPath . '/core/Router.php';
+require_once $backendPath . '/core/Controller.php';
+require_once $backendPath . '/core/Model.php';
+require_once $backendPath . '/config/Database.php';
+require_once $backendPath . '/middleware/AuthMiddleware.php';
+require_once $backendPath . '/middleware/RateLimitMiddleware.php';
 
 // Models
-require_once __DIR__ . '/../models/User.php';
-require_once __DIR__ . '/../models/Project.php';
-require_once __DIR__ . '/../models/Skill.php';
-require_once __DIR__ . '/../models/Theme.php';
-require_once __DIR__ . '/../models/Message.php';
-require_once __DIR__ . '/../models/Setting.php';
+require_once $backendPath . '/models/User.php';
+require_once $backendPath . '/models/Project.php';
+require_once $backendPath . '/models/Skill.php';
+require_once $backendPath . '/models/Theme.php';
+require_once $backendPath . '/models/Message.php';
+require_once $backendPath . '/models/Setting.php';
 
 // Controllers
-require_once __DIR__ . '/../controllers/AuthController.php';
-require_once __DIR__ . '/../controllers/ProjectController.php';
-require_once __DIR__ . '/../controllers/SkillController.php';
-require_once __DIR__ . '/../controllers/ThemeController.php';
-require_once __DIR__ . '/../controllers/MessageController.php';
-require_once __DIR__ . '/../controllers/SettingController.php';
-require_once __DIR__ . '/../controllers/UploadController.php';
+require_once $backendPath . '/controllers/AuthController.php';
+require_once $backendPath . '/controllers/ProjectController.php';
+require_once $backendPath . '/controllers/SkillController.php';
+require_once $backendPath . '/controllers/ThemeController.php';
+require_once $backendPath . '/controllers/MessageController.php';
+require_once $backendPath . '/controllers/SettingController.php';
+require_once $backendPath . '/controllers/UploadController.php';
 
 // ============================================
 // 4. Initialiser le routeur et charger les routes
 // ============================================
 $router = new Router();
-require_once __DIR__ . '/../routes/api.php';
+require_once $backendPath . '/routes/api.php';
 
 // ============================================
 // 5. Dispatcher la requête

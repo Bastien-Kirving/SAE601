@@ -3,11 +3,6 @@
 -- Base : portfolio_db | Charset : utf8mb4
 -- ============================================
 
-CREATE DATABASE IF NOT EXISTS portfolio_db
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_general_ci;
-
-USE portfolio_db;
 
 -- ============================================
 -- 1. USERS — Comptes administrateurs
