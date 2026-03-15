@@ -26,8 +26,40 @@ class Message extends Model
     }
 
     /**
+     * Récupérer une page de messages avec métadonnées de pagination.
+     *
+     * @param int $page  Page courante (commence à 1)
+     * @param int $limit Nombre par page (max 50)
+     * @return array { data, pagination: { page, limit, total, pages } }
+     */
+    public function findPaginated(int $page, int $limit): array
+    {
+        $limit  = min($limit, 50);
+        $offset = ($page - 1) * $limit;
+
+        $stmt = $this->db->prepare(
+            "SELECT * FROM {$this->table} ORDER BY created_at DESC LIMIT :limit OFFSET :offset"
+        );
+        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $total = $this->count();
+
+        return [
+            'data'       => $stmt->fetchAll(),
+            'pagination' => [
+                'page'  => $page,
+                'limit' => $limit,
+                'total' => $total,
+                'pages' => (int) ceil($total / max(1, $limit)),
+            ],
+        ];
+    }
+
+    /**
      * Récupérer les messages non lus
-     * 
+     *
      * @return array
      */
     public function findUnread(): array

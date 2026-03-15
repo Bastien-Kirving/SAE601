@@ -1,0 +1,21 @@
+# ============================================================
+# .htaccess — Dossier uploads
+# Interdire l'exécution de PHP dans les fichiers uploadés.
+# ============================================================
+
+Options -Indexes
+
+# Interdire totalement l'exécution de PHP
+<FilesMatch "\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Forcer les types MIME corrects (évite l'interprétation par le serveur)
+<IfModule mod_mime.c>
+    AddType image/jpeg  .jpg .jpeg
+    AddType image/png   .png
+    AddType image/gif   .gif
+    AddType image/webp  .webp
+    AddType image/svg+xml .svg
+</IfModule>

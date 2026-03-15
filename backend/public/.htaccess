@@ -1,4 +1,22 @@
+# ============================================================
+# .htaccess — Backend API (Infomaniak shared hosting)
+# ============================================================
+
+# Désactiver le listing des répertoires
+Options -Indexes
+
+# Protéger les fichiers sensibles (accès direct interdit)
+<FilesMatch "\.(env|log|json|lock|sql|md)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ---- Routing URL → index.php ----
 RewriteEngine On
+
+# Ne pas réécrire si le fichier ou répertoire existe physiquement
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
+# Tout le reste → index.php (conserve la query string)
 RewriteRule ^(.*)$ index.php [QSA,L]

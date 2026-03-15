@@ -21,6 +21,11 @@
 
 import toast from '../components/Toast/toastManager';
 
+// Préfixe d'URL API — vide en dev (proxy Vite) et en prod same-domain.
+// Renseigner VITE_API_BASE_URL dans .env.production si le backend
+// est sur un autre domaine (ex: https://api.bastien-lievre.com).
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+
 let authErrorHandler = null;
 
 /**
@@ -81,7 +86,7 @@ export async function apiFetch(url, options = {}) {
     }
 
     try {
-        const response = await fetch(url, fetchOptions);
+        const response = await fetch(API_BASE + url, fetchOptions);
 
         // --- 401 : Token invalide → session expirée ---
         if (response.status === 401) {

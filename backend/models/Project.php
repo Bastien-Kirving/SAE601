@@ -1,9 +1,12 @@
 <?php
 /**
  * Project.php — Modèle Projet
- * 
+ *
  * Table : projects
  * Gère aussi la table pivot project_technologies (many-to-many)
+ *
+ * Optimisation N+1 : findActive() et findAllWithTechnologies() utilisent
+ * une seule requête JOIN + GROUP_CONCAT au lieu d'une requête par projet.
  */
 
 require_once __DIR__ . '/../core/Model.php';
@@ -12,62 +15,77 @@ class Project extends Model
 {
     protected string $table = 'projects';
 
+    // Séparateur interne pour GROUP_CONCAT (choisi pour être hors des données)
+    private const TECH_SEP = '|||';
+
     /**
-     * Récupérer tous les projets avec leurs technologies
-     * 
-     * @return array
+     * Récupérer tous les projets (admin) avec technologies — 1 seule requête.
      */
     public function findAllWithTechnologies(): array
     {
-        $projects = $this->findAll();
-
-        foreach ($projects as &$project) {
-            $project['technologies'] = $this->getTechnologies($project['id']);
-        }
-
-        return $projects;
+        $sql = "
+            SELECT
+                p.*,
+                GROUP_CONCAT(t.id    ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_ids,
+                GROUP_CONCAT(t.name  ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_names,
+                GROUP_CONCAT(t.color ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_colors
+            FROM {$this->table} p
+            LEFT JOIN project_technologies pt ON p.id = pt.project_id
+            LEFT JOIN technologies t ON pt.technology_id = t.id
+            GROUP BY p.id
+            ORDER BY p.id DESC
+        ";
+        $rows = $this->db->query($sql)->fetchAll();
+        return array_map([$this, 'parseTechColumns'], $rows);
     }
 
     /**
-     * Récupérer un projet par ID avec ses technologies
-     * 
-     * @param int $id
-     * @return array|false
+     * Récupérer un projet par ID avec ses technologies — 1 seule requête.
      */
     public function findByIdWithTechnologies(int $id)
     {
-        $project = $this->findById($id);
-        if ($project) {
-            $project['technologies'] = $this->getTechnologies($id);
-        }
-        return $project;
+        $sql = "
+            SELECT
+                p.*,
+                GROUP_CONCAT(t.id    ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_ids,
+                GROUP_CONCAT(t.name  ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_names,
+                GROUP_CONCAT(t.color ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_colors
+            FROM {$this->table} p
+            LEFT JOIN project_technologies pt ON p.id = pt.project_id
+            LEFT JOIN technologies t ON pt.technology_id = t.id
+            WHERE p.id = :id
+            GROUP BY p.id
+        ";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+        return $row ? $this->parseTechColumns($row) : false;
     }
 
     /**
-     * Récupérer les projets actifs uniquement
-     * 
-     * @return array
+     * Récupérer les projets actifs avec technologies — 1 seule requête.
      */
     public function findActive(): array
     {
-        $stmt = $this->db->query(
-            "SELECT * FROM {$this->table} WHERE is_active = 1 ORDER BY sort_order ASC"
-        );
-        $projects = $stmt->fetchAll();
-
-        foreach ($projects as &$project) {
-            $project['technologies'] = $this->getTechnologies($project['id']);
-        }
-
-        return $projects;
+        $sql = "
+            SELECT
+                p.*,
+                GROUP_CONCAT(t.id    ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_ids,
+                GROUP_CONCAT(t.name  ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_names,
+                GROUP_CONCAT(t.color ORDER BY t.name SEPARATOR '" . self::TECH_SEP . "') AS _tech_colors
+            FROM {$this->table} p
+            LEFT JOIN project_technologies pt ON p.id = pt.project_id
+            LEFT JOIN technologies t ON pt.technology_id = t.id
+            WHERE p.is_active = 1
+            GROUP BY p.id
+            ORDER BY p.sort_order ASC
+        ";
+        $rows = $this->db->query($sql)->fetchAll();
+        return array_map([$this, 'parseTechColumns'], $rows);
     }
 
     /**
-     * Créer un projet et attacher ses technologies
-     * 
-     * @param array $data         Données du projet
-     * @param array $techIds      IDs des technologies
-     * @return int
+     * Créer un projet et attacher ses technologies.
      */
     public function createWithTechnologies(array $data, array $techIds = []): int
     {
@@ -77,12 +95,7 @@ class Project extends Model
     }
 
     /**
-     * Mettre à jour un projet et ses technologies
-     * 
-     * @param int   $id
-     * @param array $data
-     * @param array $techIds
-     * @return bool
+     * Mettre à jour un projet et ses technologies.
      */
     public function updateWithTechnologies(int $id, array $data, array $techIds = []): bool
     {
@@ -91,42 +104,60 @@ class Project extends Model
         return $result;
     }
 
+    // ----------------------------------------------------------------
+    // Méthodes privées
+    // ----------------------------------------------------------------
+
     /**
-     * Récupérer les technologies d'un projet
-     * 
-     * @param int $projectId
-     * @return array
+     * Convertit les colonnes GROUP_CONCAT (_tech_ids, _tech_names, _tech_colors)
+     * en tableau 'technologies' structuré, puis les supprime de la ligne.
      */
-    private function getTechnologies(int $projectId): array
+    private function parseTechColumns(array $row): array
     {
-        $stmt = $this->db->prepare(
-            "SELECT t.id, t.name, t.color 
-             FROM technologies t 
-             INNER JOIN project_technologies pt ON t.id = pt.technology_id 
-             WHERE pt.project_id = :project_id"
+        $ids    = $row['_tech_ids']    ?? null;
+        $names  = $row['_tech_names']  ?? null;
+        $colors = $row['_tech_colors'] ?? null;
+
+        unset($row['_tech_ids'], $row['_tech_names'], $row['_tech_colors']);
+
+        if ($ids === null) {
+            $row['technologies'] = [];
+            return $row;
+        }
+
+        $idsArr    = explode(self::TECH_SEP, $ids);
+        $namesArr  = explode(self::TECH_SEP, $names ?? '');
+        $colorsArr = explode(self::TECH_SEP, $colors ?? '');
+
+        $row['technologies'] = array_map(
+            fn($i) => [
+                'id'    => (int) $idsArr[$i],
+                'name'  => $namesArr[$i]  ?? '',
+                'color' => $colorsArr[$i] ?? '',
+            ],
+            array_keys($idsArr)
         );
-        $stmt->execute(['project_id' => $projectId]);
-        return $stmt->fetchAll();
+
+        return $row;
     }
 
     /**
-     * Synchroniser les technologies d'un projet (supprimer + réinsérer)
-     * 
-     * @param int   $projectId
-     * @param array $techIds
+     * Synchroniser les technologies d'un projet (supprimer + réinsérer).
      */
     private function syncTechnologies(int $projectId, array $techIds): void
     {
-        // Supprimer les anciennes liaisons
         $stmt = $this->db->prepare("DELETE FROM project_technologies WHERE project_id = :id");
         $stmt->execute(['id' => $projectId]);
 
-        // Insérer les nouvelles
+        if (empty($techIds)) {
+            return;
+        }
+
         $stmt = $this->db->prepare(
             "INSERT INTO project_technologies (project_id, technology_id) VALUES (:pid, :tid)"
         );
         foreach ($techIds as $techId) {
-            $stmt->execute(['pid' => $projectId, 'tid' => $techId]);
+            $stmt->execute(['pid' => $projectId, 'tid' => (int) $techId]);
         }
     }
 }

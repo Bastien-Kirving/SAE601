@@ -9,6 +9,7 @@
  * to avoid React re-renders on every scroll tick.
  */
 
+import { Helmet } from 'react-helmet-async';
 import { useDynamicTheme } from './hooks/useDynamicTheme';
 import { useScrollAnimations } from './hooks/useScrollAnimations';
 
@@ -38,6 +39,14 @@ export default function App() {
 
     return (
         <div className={`app-container theme-${theme}`}>
+            <Helmet>
+                <title>Bastien Lièvre — Développeur Web Full-Stack</title>
+                <meta name="description" content="Portfolio de Bastien Lièvre, développeur web full-stack spécialisé en React, PHP et Three.js. Découvrez mes projets et compétences." />
+                <meta property="og:title" content="Bastien Lièvre — Développeur Web Full-Stack" />
+                <meta property="og:description" content="Portfolio de Bastien Lièvre, développeur web full-stack spécialisé en React, PHP et Three.js." />
+                <meta property="og:url" content="https://bastien-lievre.com" />
+            </Helmet>
+
             {/* ---- DYNAMIC THEME INJECTION ---- */}
             <ThemeStyles />
 

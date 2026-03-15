@@ -1,0 +1,19 @@
+# ============================================================
+# .htaccess — Frontend React SPA (Infomaniak)
+# ============================================================
+# CRITIQUE : sans ce fichier, toute URL autre que "/" retourne
+# un 404 Apache car le fichier n'existe pas physiquement.
+# React Router gère le routing côté client — Apache doit
+# toujours servir index.html pour laisser React décider.
+
+Options -Indexes
+
+RewriteEngine On
+
+# Servir les fichiers statiques existants directement
+# (JS, CSS, images, fonts, uploads...)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Toutes les autres routes → index.html (React Router prend le relais)
+RewriteRule ^ index.html [QSA,L]

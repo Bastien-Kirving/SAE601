@@ -20,17 +20,25 @@ class MessageController extends Controller
     }
 
     /**
-     * GET /api/messages — Lister tous les messages (admin uniquement)
+     * GET /api/messages — Lister les messages avec pagination (admin uniquement)
+     *
+     * Paramètres GET optionnels :
+     *   ?page=1   (défaut : 1)
+     *   ?limit=20 (défaut : 20, max : 50)
      */
     public function index(): void
     {
-        $messages = $this->messageModel->findAll();
+        $page  = max(1, (int) ($_GET['page']  ?? 1));
+        $limit = max(1, (int) ($_GET['limit'] ?? 20));
+
+        $result      = $this->messageModel->findPaginated($page, $limit);
         $unreadCount = $this->messageModel->countUnread();
 
         $this->jsonResponse([
-            'messages' => $messages,
+            'messages'     => $result['data'],
             'unread_count' => $unreadCount,
-            'total' => count($messages)
+            'total'        => $result['pagination']['total'],
+            'pagination'   => $result['pagination'],
         ]);
     }
 
