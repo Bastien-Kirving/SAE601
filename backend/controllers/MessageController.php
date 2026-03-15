@@ -8,6 +8,7 @@
  */
 
 require_once __DIR__ . '/../core/Controller.php';
+require_once __DIR__ . '/../core/Mailer.php';
 require_once __DIR__ . '/../models/Message.php';
 
 class MessageController extends Controller
@@ -104,26 +105,31 @@ class MessageController extends Controller
     }
 
     /**
-     * Envoyer une notification par email pour un nouveau message
+     * Envoyer une notification par email via SMTP authentifié.
+     * Fallback vers mail() natif si SMTP non configuré.
      */
     private function sendEmailNotification(array $data): void
     {
-        $to = ADMIN_EMAIL;
-        $subject = "Nouveau message de contact : " . ($data['subject'] ?? 'Sans objet');
-        
-        $body = "Vous avez reçu un nouveau message via votre portfolio :\n\n";
-        $body .= "Nom : " . $data['name'] . "\n";
-        $body .= "Email : " . $data['email'] . "\n";
-        $body .= "Sujet : " . ($data['subject'] ?? 'N/A') . "\n\n";
-        $body .= "Message :\n" . $data['content'] . "\n\n";
-        $body .= "--- \nCe message a été envoyé automatiquement depuis votre Portfolio SAE601.";
+        $subject = "Nouveau message : " . ($data['subject'] ?: 'Sans objet');
 
-        $headers = "From: noreply@bastien-lievre.com\r\n";
+        $body  = "Vous avez reçu un nouveau message via votre portfolio :\n\n";
+        $body .= "Nom : "    . $data['name']               . "\n";
+        $body .= "Email : "  . $data['email']              . "\n";
+        $body .= "Sujet : "  . ($data['subject'] ?: 'N/A') . "\n\n";
+        $body .= "Message :\n" . $data['content']          . "\n\n";
+        $body .= "---\nCe message a été envoyé automatiquement depuis votre Portfolio SAE601.";
+
+        // SMTP configuré → envoi authentifié (recommandé, évite le spam)
+        if (!empty(SMTP_HOST) && !empty(SMTP_USER) && !empty(SMTP_PASS)) {
+            $mailer = new Mailer();
+            $mailer->send(ADMIN_EMAIL, $subject, $body, $data['email']);
+            return;
+        }
+
+        // Fallback mail() natif (risque rejet/spam sans SMTP configuré)
+        $headers  = "From: noreply@bastien-lievre.com\r\n";
         $headers .= "Reply-To: " . $data['email'] . "\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
-
-        // On utilise @mail pour ignorer les erreurs si le serveur n'est pas configuré
-        // En local, cela retournera false sans planter l'exécution.
-        @mail($to, $subject, $body, $headers);
+        @mail(ADMIN_EMAIL, $subject, $body, $headers);
     }
 }
