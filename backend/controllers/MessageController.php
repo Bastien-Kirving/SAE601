@@ -118,7 +118,7 @@ class MessageController extends Controller
         $body .= "Message :\n" . $data['content'] . "\n\n";
         $body .= "--- \nCe message a été envoyé automatiquement depuis votre Portfolio SAE601.";
 
-        $headers = "From: webmaster@portfolio.com\r\n";
+        $headers = "From: noreply@bastien-lievre.com\r\n";
         $headers .= "Reply-To: " . $data['email'] . "\r\n";
         $headers .= "X-Mailer: PHP/" . phpversion();
 
