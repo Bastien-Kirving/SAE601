@@ -17,7 +17,7 @@ class Router
     /**
      * Enregistrer une route GET
      */
-    public function get(string $path, array $handler, array $middleware = []): void
+    public function get(string $path, array|callable $handler, array $middleware = []): void
     {
         $this->addRoute('GET', $path, $handler, $middleware);
     }
@@ -49,7 +49,7 @@ class Router
     /**
      * Ajouter une route au registre
      */
-    private function addRoute(string $method, string $path, array $handler, array $middleware): void
+    private function addRoute(string $method, string $path, array|callable $handler, array $middleware): void
     {
         $this->routes[] = [
             'method' => $method,
@@ -96,11 +96,14 @@ class Router
                     }
                 }
 
-                // Appeler le controller
-                $controller = new $route['handler'][0]();
-                $action = $route['handler'][1];
-
-                call_user_func_array([$controller, $action], $matches);
+                // Appeler le handler (closure ou controller)
+                if (is_callable($route['handler'])) {
+                    call_user_func_array($route['handler'], $matches);
+                } else {
+                    $controller = new $route['handler'][0]();
+                    $action = $route['handler'][1];
+                    call_user_func_array([$controller, $action], $matches);
+                }
                 return;
             }
         }
