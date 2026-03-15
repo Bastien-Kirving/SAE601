@@ -9,6 +9,23 @@
  * Le dossier controllers/, routes/, etc. sont au même niveau.
  */
 
+// Ne jamais afficher les erreurs PHP en clair (cela casserait le JSON)
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+error_reporting(E_ALL);
+
+// Capturer les erreurs fatales et les retourner en JSON propre
+register_shutdown_function(function () {
+    $err = error_get_last();
+    if ($err && in_array($err['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=utf-8');
+        }
+        echo json_encode(['error' => 'Erreur serveur interne', 'detail' => $err['message']]);
+    }
+});
+
 // ============================================
 // 1. Configuration
 // ============================================
