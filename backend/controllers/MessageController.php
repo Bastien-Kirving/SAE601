@@ -71,8 +71,12 @@ class MessageController extends Controller
 
         $messageId = $this->messageModel->create($messageData);
 
-        // Envoyer une notification par email
-        $this->sendEmailNotification($messageData);
+        // Envoyer une notification par email (échec silencieux : message déjà sauvegardé)
+        try {
+            $this->sendEmailNotification($messageData);
+        } catch (\Throwable $e) {
+            // Email non critique : on continue même si l'envoi échoue
+        }
 
         $this->jsonResponse([
             'message' => 'Message envoyé avec succès',
