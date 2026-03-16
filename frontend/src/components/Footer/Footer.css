@@ -162,6 +162,12 @@
     font-size: 0.75rem;
 }
 
+/* ---- Theme Overrides ---- */
+.theme-gwen .site-footer {
+    --text-color: #ffffff;
+    --text-color-rgb: 255, 255, 255;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 640px) {
     .site-footer {
