@@ -145,9 +145,12 @@ export default function Contact({ theme = 'miles' }) {
                     <p>Alternant chez Kiriving</p>
 
                     <div className="social-links">
-                        <a href="https://github.com/votre-profil" target="_blank" rel="noreferrer" className="social-link">GH</a>
-                        <a href="https://linkedin.com/in/votre-profil" target="_blank" rel="noreferrer" className="social-link">IN</a>
-                        <a href="https://twitter.com/votre-profil" target="_blank" rel="noreferrer" className="social-link">TW</a>
+                        <a href="https://github.com/Belrode" target="_blank" rel="noreferrer" className="social-link" title="GitHub">
+                            <span className="social-link-icon social-link-icon--github" aria-hidden="true" />
+                        </a>
+                        <a href="https://www.linkedin.com/in/bastien-lievre-developpementweb-alternance/" target="_blank" rel="noreferrer" className="social-link" title="LinkedIn">
+                            <span className="social-link-icon social-link-icon--linkedin" aria-hidden="true" />
+                        </a>
                     </div>
                 </div>
             </div>

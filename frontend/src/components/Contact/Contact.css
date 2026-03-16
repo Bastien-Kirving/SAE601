@@ -245,5 +245,33 @@
     box-shadow: 0 5px 15px rgba(255, 23, 68, 0.3);
 }
 
+.social-link-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: var(--primary-color, #FF1744);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    transition: background-color 0.3s ease;
+}
+
+.social-link-icon--github {
+    mask-image: url('/images/github.png');
+    -webkit-mask-image: url('/images/github.png');
+}
+
+.social-link-icon--linkedin {
+    mask-image: url('/images/linkedin.png');
+    -webkit-mask-image: url('/images/linkedin.png');
+}
+
+.social-link:hover .social-link-icon {
+    background-color: #ffffff;
+}
+
 /* → Thèmes dans Contact.themes.css */
 /* → Fond NYC et responsive dans Contact.background.css */

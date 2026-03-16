@@ -65,23 +65,23 @@ export default function Footer({ theme = 'miles' }) {
                 {/* Liens */}
                 <div className="footer-links">
                     <a
-                        href="https://github.com/"
+                        href="https://github.com/Belrode"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="footer-link"
                         aria-label="GitHub"
                     >
-                        GitHub
+                        <span className="footer-link-icon footer-link-icon--github" aria-hidden="true" />
                     </a>
                     <span className="footer-link-sep">·</span>
                     <a
-                        href="https://linkedin.com/"
+                        href="https://www.linkedin.com/in/bastien-lievre-developpementweb-alternance/"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="footer-link"
                         aria-label="LinkedIn"
                     >
-                        LinkedIn
+                        <span className="footer-link-icon footer-link-icon--linkedin" aria-hidden="true" />
                     </a>
                 </div>
             </div>
