@@ -6,16 +6,9 @@
     position: relative;
     width: 100%;
     height: 800vh;
-    /* Increased heavily to make the cinematic scroll very slow */
     z-index: 10;
-    /* We don't hide overflow here, allow contact to overlap if needed */
-}
-
-/* Margin bottom negative to pull the Contact section up over the end of the transition */
-.leap-container {
     margin-bottom: -100vh;
     margin-top: -1px;
-    /* prevent sub-pixel white line gap */
 }
 
 .leap-sticky {
@@ -30,156 +23,175 @@
     justify-content: center;
     align-items: center;
 
-    /* Masque de fondu progressif en haut et en bas pour lisser l'apparition/disparition */
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15vh, black calc(100% - 15vh), transparent 100%);
     mask-image: linear-gradient(to bottom, transparent 0%, black 15vh, black calc(100% - 15vh), transparent 100%);
 }
 
-/* Base Theme Fallbacks */
+/* ── Thèmes ─────────────────────────────── */
 .leap-container {
-    --leap-primary: var(--primary-color, #FF1744);
-    --sky-horizon: #2d0a1a;
+    --leap-primary:   var(--primary-color, #FF1744);
+    --sky-horizon:    #2d0a1a;
     --building-color: #080412;
 }
+.theme-miles  { --sky-horizon: #2d0a1a; --building-color: #080412; }
+.theme-gwen   { --sky-horizon: #e8d0f8; --building-color: #2a1a3a; }
+.theme-glitch { --sky-horizon: #141428; --building-color: #080812; }
 
-.theme-miles {
-    --sky-horizon: #2d0a1a;
-    --building-color: #080412;
-}
-
-.theme-gwen {
-    --sky-horizon: #e8d0f8;
-    --building-color: #2a1a3a;
-}
-
-.theme-glitch {
-    --sky-horizon: #141428;
-    --building-color: #080812;
-}
-
-/* Background Sky blending towards Contact section's inverted sky */
+/* ── Ciel ────────────────────────────────── */
 .leap-sky {
     position: absolute;
     inset: 0;
-    /* Blend from building base to inverted sky horizon */
-    background: linear-gradient(to bottom,
-            var(--building-color) 0%,
-            var(--sky-horizon) 100%);
-    opacity: 1;
+    background: linear-gradient(to bottom, var(--building-color) 0%, var(--sky-horizon) 100%);
     z-index: 1;
 }
 
-/* Cinematic text */
-.leap-title {
-    position: absolute;
-    top: 15%;
-    left: 50%;
-    transform: translateX(-50%);
-    color: rgba(255, 255, 255, 0.05);
-    /* very subtle */
-    font-size: clamp(3rem, 8vw, 6rem);
-    font-weight: 900;
-    text-transform: uppercase;
-    font-family: 'Space Grotesk', sans-serif;
-    letter-spacing: 12px;
-    white-space: nowrap;
-    z-index: 2;
-    pointer-events: none;
-    user-select: none;
-}
+/* ── Speed Lines ─────────────────────────── */
 
-.theme-gwen .leap-title {
-    color: rgba(0, 0, 0, 0.05);
-}
-
-/* Speed Lines Layer */
+/* Wrapper : clip + opacité contrôlée par JS */
 .leap-speed-lines {
     position: absolute;
-    top: -200%;
+    inset: 0;
+    overflow: hidden;
+    z-index: 3;
+    pointer-events: none;
+    will-change: opacity;
+}
+
+/* Inner : translate3d GPU — seamless loop CSS */
+.leap-speed-lines-inner {
+    position: absolute;
+    top: -300px;           /* décalage d'une tuile pour cacher le jump */
     left: 0;
     width: 100%;
-    height: 500%;
+    height: calc(100% + 300px);
+
     background-image:
-        linear-gradient(to bottom, transparent 40%, rgba(255, 255, 255, 0.08) 50%, transparent 60%),
-        linear-gradient(to bottom, transparent 45%, var(--leap-primary) 50%, transparent 55%),
-        linear-gradient(to bottom, transparent 48%, rgba(255, 255, 255, 0.15) 50%, transparent 52%);
-    background-size: 2px 250px, 1px 400px, 3px 150px;
-    background-position: 15% 0, 85% 0, 50% 0;
+        linear-gradient(to bottom, transparent 40%, rgba(255,255,255,0.09) 50%, transparent 60%),
+        linear-gradient(to bottom, transparent 44%, var(--leap-primary)    50%, transparent 56%),
+        linear-gradient(to bottom, transparent 47%, rgba(255,255,255,0.16) 50%, transparent 53%),
+        linear-gradient(to bottom, transparent 42%, rgba(255,255,255,0.06) 50%, transparent 58%),
+        linear-gradient(to bottom, transparent 45%, var(--leap-primary)    50%, transparent 55%),
+        linear-gradient(to bottom, transparent 48%, rgba(255,255,255,0.11) 50%, transparent 52%);
+
+    /* Toutes les tuiles font 300px → loop parfait */
+    background-size:
+        2px 300px,
+        1px 300px,
+        3px 300px,
+        2px 300px,
+        1px 300px,
+        4px 300px;
+
+    /* Lignes uniquement sur les bords — Spider-Man garde le centre libre */
+    background-position:
+        7%  0,
+        93% 0,
+        19% 0,
+        81% 0,
+        4%  0,
+        96% 0;
+
     background-repeat: repeat-y;
-    will-change: transform, opacity;
-    z-index: 3;
+
+    animation: leapRushLines 0.28s linear infinite;
+    will-change: transform;
+}
+
+@keyframes leapRushLines {
+    from { transform: translateY(0);      }
+    to   { transform: translateY(300px);  }
+}
+
+/* ── Image Container — centrage statique ── */
+.leap-image-container {
+    position: absolute;
+    left: 50%;
+    top: 44%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
     pointer-events: none;
 }
 
-/* Inverted Buildings Rushing Past */
-.leap-buildings {
-    position: absolute;
-    top: -50%;
-    left: 0;
-    width: 100%;
-    height: 200%;
+/* Inner — animé par JS (translate3d, scale, rotate) */
+.leap-image-inner {
+    position: relative;
     will-change: transform, opacity;
-    z-index: 4;
-    pointer-events: none;
     opacity: 0;
 }
 
-.leap-building {
+/* Halo coloré derrière Spider-Man */
+.leap-image-glow {
     position: absolute;
-    background: var(--building-color);
-    box-shadow: 0 0 30px var(--leap-primary), inset 0 0 20px rgba(0, 0, 0, 0.8);
-    border-radius: 4px;
-    /* Simulate glowing windows blurring past */
-    border-right: 2px solid rgba(255, 255, 255, 0.1);
-    border-left: 2px solid rgba(255, 255, 255, 0.1);
+    inset: -60px;
+    background: radial-gradient(ellipse at center, var(--leap-primary) 0%, transparent 65%);
+    opacity: 0.28;
+    filter: blur(50px);
+    z-index: 0;
+    pointer-events: none;
+}
+.theme-gwen   .leap-image-glow { opacity: 0.18; }
+.theme-glitch .leap-image-glow { opacity: 0.34; }
+
+/* Image Spider-Man */
+.leap-spiderman-img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    max-height: 68vh;
+    max-width: 55vw;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter:
+        drop-shadow(0 0 22px var(--leap-primary))
+        drop-shadow(0 18px 50px rgba(0, 0, 0, 0.85));
+}
+.theme-gwen .leap-spiderman-img {
+    filter:
+        drop-shadow(0 0 22px #E040FB)
+        drop-shadow(0 18px 50px rgba(0, 0, 0, 0.45));
 }
 
-/* Positioning buildings to rush past the edges */
-.lb-1 {
-    width: 12%;
-    height: 60%;
-    left: -2%;
-    top: 0;
+/* ── Titre cinématique ───────────────────── */
+.leap-title {
+    position: absolute;
+    bottom: 9%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.93);
+    font-size: clamp(2rem, 6.5vw, 5.2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 14px;
+    white-space: nowrap;
+    z-index: 7;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0; /* contrôlé par JS */
+    text-shadow:
+        0 0 30px var(--leap-primary),
+        0 0 65px rgba(0, 0, 0, 0.8);
+}
+.theme-gwen .leap-title {
+    color: rgba(25, 0, 45, 0.93);
+    text-shadow:
+        0 0 30px #E040FB,
+        0 0 65px rgba(255, 255, 255, 0.3);
 }
 
-.lb-2 {
-    width: 8%;
-    height: 80%;
-    left: 15%;
-    top: 0;
-    opacity: 0.6;
-}
-
-.lb-3 {
-    width: 15%;
-    height: 50%;
-    right: -5%;
-    top: 0;
-}
-
-.lb-4 {
-    width: 10%;
-    height: 75%;
-    right: 18%;
-    top: 0;
-    opacity: 0.7;
-}
-
-.lb-5 {
-    width: 6%;
-    height: 40%;
-    right: 35%;
-    top: 0;
-    opacity: 0.4;
-}
-
+/* ── Mobile ──────────────────────────────── */
 @media (max-width: 768px) {
-    .leap-container {
-        height: 300vh;
-    }
+    .leap-container { height: 300vh; }
 
     .leap-title {
-        font-size: 2rem;
+        font-size: clamp(1.4rem, 5.5vw, 2.2rem);
         letter-spacing: 6px;
+        bottom: 7%;
     }
+    .leap-spiderman-img {
+        max-height: 60vh;
+        max-width: 88vw;
+    }
+    .leap-image-container { top: 46%; }
 }
