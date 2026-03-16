@@ -130,10 +130,7 @@ class MessageController extends Controller
             return;
         }
 
-        // Fallback mail() natif (risque rejet/spam sans SMTP configuré)
-        $headers  = "From: noreply@bastien-lievre.com\r\n";
-        $headers .= "Reply-To: " . $data['email'] . "\r\n";
-        $headers .= "X-Mailer: PHP/" . phpversion();
-        @mail(ADMIN_EMAIL, $subject, $body, $headers);
+        // mail() natif non disponible sur Infomaniak — SMTP requis
+        // Configurer SMTP_HOST, SMTP_USER, SMTP_PASS dans .env pour activer les notifications
     }
 }
