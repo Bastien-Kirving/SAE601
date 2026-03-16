@@ -9,101 +9,9 @@
  * - Titre avec effet glitch
  */
 
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import SkillGrid from './SkillGrid';
-import './HeroSkill.cursor.css';
 import './HeroSkill.css';
-
-/* ============================================
-   Custom Spider-Man Cursor
-   ============================================ */
-function SpiderCursor({ sectionRef }) {
-  const dotRef      = useRef(null);
-  const ringRef     = useRef(null);
-  const posRef      = useRef({ x: -200, y: -200 });
-  const ringPos     = useRef({ x: -200, y: -200 });
-  const rafRef      = useRef(null);
-  const isActiveRef = useRef(false);
-  const [hovering, setHovering] = useState(false);
-
-  const onMove        = useCallback((e) => { posRef.current = { x: e.clientX, y: e.clientY }; }, []);
-  const onEnterCard   = useCallback(() => setHovering(true),  []);
-  const onLeaveCard   = useCallback(() => setHovering(false), []);
-
-  useEffect(() => {
-    window.addEventListener('mousemove', onMove);
-
-    // MutationObserver limité à la section (pas document.body entier)
-    const root = sectionRef?.current ?? document.body;
-    const attached = new WeakSet();
-    const watch = () => {
-      root.querySelectorAll('.orbit-ring-label, .orbital-filter-btn').forEach(el => {
-        if (attached.has(el)) return;
-        el.addEventListener('mouseenter', onEnterCard);
-        el.addEventListener('mouseleave', onLeaveCard);
-        attached.add(el);
-      });
-    };
-    watch();
-    const mo = new MutationObserver(watch);
-    mo.observe(root, { childList: true, subtree: true });
-
-    // RAF actif seulement quand la section est visible
-    const visObserver = new IntersectionObserver(
-      ([entry]) => {
-        isActiveRef.current = entry.isIntersecting;
-        if (entry.isIntersecting && !rafRef.current) {
-          rafRef.current = requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0 }
-    );
-    if (sectionRef?.current) visObserver.observe(sectionRef.current);
-
-    const animate = () => {
-      if (!isActiveRef.current) {
-        rafRef.current = null;
-        return;
-      }
-      const lerpFactor = 0.13;
-      ringPos.current.x += (posRef.current.x - ringPos.current.x) * lerpFactor;
-      ringPos.current.y += (posRef.current.y - ringPos.current.y) * lerpFactor;
-
-      if (dotRef.current) {
-        dotRef.current.style.transform =
-          `translate(${posRef.current.x}px, ${posRef.current.y}px) translate(-50%,-50%)`;
-      }
-      if (ringRef.current) {
-        ringRef.current.style.transform =
-          `translate(${ringPos.current.x}px, ${ringPos.current.y}px) translate(-50%,-50%)`;
-      }
-      rafRef.current = requestAnimationFrame(animate);
-    };
-    rafRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('mousemove', onMove);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      mo.disconnect();
-      visObserver.disconnect();
-    };
-  }, [onMove, onEnterCard, onLeaveCard, sectionRef]);
-
-  return (
-    <>
-      <div ref={dotRef}  className={`spider-cursor-dot  ${hovering ? 'spider-cursor--hover' : ''}`} aria-hidden="true" />
-      <div ref={ringRef} className={`spider-cursor-ring ${hovering ? 'spider-cursor--hover' : ''}`} aria-hidden="true">
-        <svg viewBox="0 0 40 40" className="spider-cursor-web">
-          <line x1="20" y1="2"  x2="20" y2="38" stroke="currentColor" strokeWidth="0.6"/>
-          <line x1="2"  y1="20" x2="38" y2="20" stroke="currentColor" strokeWidth="0.6"/>
-          <line x1="7"  y1="7"  x2="33" y2="33" stroke="currentColor" strokeWidth="0.6"/>
-          <line x1="33" y1="7"  x2="7"  y2="33" stroke="currentColor" strokeWidth="0.6"/>
-          <circle cx="20" cy="20" r="6" fill="none" stroke="currentColor" strokeWidth="0.6"/>
-        </svg>
-      </div>
-    </>
-  );
-}
 
 /* ============================================
    Main Component
@@ -143,8 +51,6 @@ export default function HeroSkill({ theme = 'miles' }) {
       ref={containerRef}
       className={`hero-skill theme-${theme} ${isVisible ? 'hero-skill--visible' : ''}`}
     >
-      <SpiderCursor sectionRef={containerRef} />
-
       {/* Ambient orbs */}
       <div className="skill-orbs" aria-hidden="true">
         <span className="skill-orb skill-orb-1" />

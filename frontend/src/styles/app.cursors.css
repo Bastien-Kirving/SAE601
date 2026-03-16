@@ -16,7 +16,6 @@
 .theme-miles .theme-btn,
 .theme-miles *:hover {
     cursor: image-set(url('/images/cursors/Into the Spider-Verse Miles Morales Animated--pointer--SweezyCursors..cur') 3x) 2 2, pointer !important;
-    /* Pour compatibilité Safari/anciens navigateurs Chrome: */
     cursor: -webkit-image-set(url('/images/cursors/Into the Spider-Verse Miles Morales Animated--pointer--SweezyCursors..cur') 3x) 2 2, pointer !important;
 }
 

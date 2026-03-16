@@ -24,6 +24,7 @@ import Contact from './components/Contact/Contact';
 import LeapOfFaith from './components/LeapOfFaith/LeapOfFaith';
 import Footer from './components/Footer/Footer';
 import SpiderWebClick from './components/SpiderWebClick';
+import SpiderCursor from './components/SpiderCursor';
 import Navbar from './components/Navbar/Navbar';
 import ToastContainer from './components/Toast/ToastContainer';
 import './styles/app.css';
@@ -80,6 +81,9 @@ export default function App() {
 
             {/* ---- SPIDER WEB CLICK EFFECT ---- */}
             <SpiderWebClick theme={theme} />
+
+            {/* ---- SPIDER CURSOR (dot + ring global) ---- */}
+            <SpiderCursor />
 
             {/* ---- BACKGROUNDS (fixed, layered) ---- */}
 

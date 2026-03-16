@@ -5,16 +5,13 @@
 /* ============================================
    Custom Spider-Man Cursor
    ============================================ */
-.hero-skill {
-    cursor: none;
-}
-
 .spider-cursor-dot {
     position: fixed;
     top: 0;
     left: 0;
     width: 8px;
     height: 8px;
+    opacity: 0;
     background: var(--skill-primary, #FF1744);
     border-radius: 50%;
     pointer-events: none;
@@ -35,6 +32,7 @@
     left: 0;
     width: 36px;
     height: 36px;
+    opacity: 0;
     border: 1.5px solid rgba(255, 23, 68, 0.7);
     border-radius: 50%;
     pointer-events: none;
