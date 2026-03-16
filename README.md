@@ -117,7 +117,7 @@ SAE601/
 - **Node.js** 18 ou supérieur
 - **PHP** 7.4 ou supérieur (avec extensions : `pdo_mysql`, `openssl`, `mbstring`)
 - **MySQL** 5.7+ ou MariaDB
-- **Apache** avec `mod_rewrite` activé (ou `php -S` pour le développement)
+- **Apache** avec `mod_rewrite` activé (uniquement en production — pas nécessaire en développement local)
 
 ---
 
@@ -179,10 +179,12 @@ mysql -u root -p portfolio_db < ../database/seed.sql
 
 ```bash
 cd backend
-php -S localhost:8080
+php -S localhost:8080 router.php
 ```
 
 > L'API sera disponible sur `http://localhost:8080/api/`
+>
+> Le fichier `router.php` permet au serveur PHP intégré de servir correctement les fichiers statiques (images uploadées dans `public/uploads/`) **et** les routes API. Apache n'est pas nécessaire en développement local.
 
 ### 5. Installer et démarrer le frontend
 
@@ -200,7 +202,7 @@ npm run dev
 
 ```bash
 # Terminal 1 — Backend
-cd SAE601/backend && php -S localhost:8080
+cd SAE601/backend && php -S localhost:8080 router.php
 
 # Terminal 2 — Frontend
 cd SAE601/frontend && npm run dev
