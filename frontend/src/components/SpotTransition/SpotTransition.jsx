@@ -20,7 +20,8 @@ export default function SpotTransition({ theme = 'miles' }) {
     const containerRef = useRef(null);
     const canvasRef = useRef(null);
     const scrollProgress = useRef(0);
-    const animRef = useRef(null);
+    const animRef    = useRef(null);
+    const animateRef = useRef(null);   // référence stable pour le restart
     const isVisibleRef = useRef(false);
     const stateRef = useRef({
         time: 0,
@@ -39,10 +40,15 @@ export default function SpotTransition({ theme = 'miles' }) {
         drawFn(stateRef.current, scrollProgress.current, ctx, W, H, colors);
     }, []);
 
-    /* ---- Visibility tracking (pause rAF when off-screen) ---- */
+    /* ---- Visibility tracking — cancel/restart RAF ---- */
     useEffect(() => {
         const observer = new IntersectionObserver(
-            ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
+            ([entry]) => {
+                isVisibleRef.current = entry.isIntersecting;
+                if (entry.isIntersecting && !animRef.current) {
+                    animRef.current = requestAnimationFrame(animateRef.current);
+                }
+            },
             { threshold: 0 }
         );
         if (containerRef.current) observer.observe(containerRef.current);
@@ -69,13 +75,16 @@ export default function SpotTransition({ theme = 'miles' }) {
         window.addEventListener('resize', resize);
 
         function animate() {
-            if (isVisibleRef.current) {
-                stateRef.current.time += 0.016;
-                const colors = THEMES[theme] || THEMES.miles;
-                draw(ctx, W, H, colors);
+            if (!isVisibleRef.current) {
+                animRef.current = null;
+                return;
             }
+            stateRef.current.time += 0.016;
+            const colors = THEMES[theme] || THEMES.miles;
+            draw(ctx, W, H, colors);
             animRef.current = requestAnimationFrame(animate);
         }
+        animateRef.current = animate;
         animRef.current = requestAnimationFrame(animate);
 
         return () => {

@@ -9,24 +9,47 @@ export default function LeapOfFaith({ theme = 'miles' }) {
     const rafId          = useRef(null);
     const smoothProgress = useRef(0);   // valeur lerpée (fluide)
     const targetProgress = useRef(0);   // valeur brute du scroll
+    const isVisibleRef   = useRef(false);
+
+    // Précalculer les valeurs de scroll pour éviter getBoundingClientRect() chaque frame
+    const scrollDataRef  = useRef({ scrollTop: 0, totalScroll: 1 });
 
     useEffect(() => {
+        // Mise à jour du progress uniquement sur les events scroll (pas chaque frame)
+        const updateScrollData = () => {
+            if (!containerRef.current) return;
+            const rect = containerRef.current.getBoundingClientRect();
+            const totalScroll = rect.height - window.innerHeight;
+            const currentScroll = -rect.top;
+            scrollDataRef.current = { totalScroll: Math.max(1, totalScroll) };
+            targetProgress.current = Math.min(1, Math.max(0, currentScroll / Math.max(1, totalScroll)));
+        };
+
+        window.addEventListener('scroll', updateScrollData, { passive: true });
+        updateScrollData();
+
+        // Visibility tracking — pause le RAF quand hors écran
+        const visObserver = new IntersectionObserver(
+            ([entry]) => {
+                isVisibleRef.current = entry.isIntersecting;
+                if (entry.isIntersecting && !rafId.current) {
+                    rafId.current = requestAnimationFrame(animate);
+                }
+            },
+            { threshold: 0 }
+        );
+        if (containerRef.current) visObserver.observe(containerRef.current);
+
         const lerp      = (a, b, t) => a + (b - a) * t;
         const easeInOut = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-        const getScrollProgress = () => {
-            if (!containerRef.current) return 0;
-            const rect       = containerRef.current.getBoundingClientRect();
-            const totalScroll  = rect.height - window.innerHeight;
-            const currentScroll = -rect.top;
-            return Math.min(1, Math.max(0, currentScroll / totalScroll));
-        };
-
         const animate = (time) => {
+            // Arrêt du RAF si hors écran
+            if (!isVisibleRef.current) {
+                rafId.current = null;
+                return;
+            }
             rafId.current = requestAnimationFrame(animate);
-
-            // Mise à jour de la cible chaque frame
-            targetProgress.current = getScrollProgress();
 
             // Lerp vers la cible — lag cinématique (~0.06 = très fluide)
             smoothProgress.current = lerp(smoothProgress.current, targetProgress.current, 0.06);
@@ -103,6 +126,8 @@ export default function LeapOfFaith({ theme = 'miles' }) {
         rafId.current = requestAnimationFrame(animate);
 
         return () => {
+            window.removeEventListener('scroll', updateScrollData);
+            visObserver.disconnect();
             if (rafId.current) cancelAnimationFrame(rafId.current);
         };
     }, []);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import './SkillGrid.css';
 
 export default function SkillGrid({ skills, theme }) {
@@ -31,10 +31,10 @@ export default function SkillGrid({ skills, theme }) {
             {rows.map((rowSkills, rowIndex) => {
                 if (rowSkills.length === 0) return null;
                 
-                // Dupliquer les compétences de la ligne pour que l'effet visuel Marquee fonctionne
-                // sans fin sur les grands écrans (min 60 cartes visuelles pour être sûr de remplir l'écran).
+                // Dupliquer les compétences pour remplir la rangée.
+                // 20 cartes suffisent à couvrir les plus grands écrans (110px + gap).
                 let paddedSkills = [...rowSkills];
-                while (paddedSkills.length < 60) {
+                while (paddedSkills.length < 20) {
                     paddedSkills = [...paddedSkills, ...rowSkills];
                 }
 

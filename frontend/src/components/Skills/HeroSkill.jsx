@@ -17,12 +17,13 @@ import './HeroSkill.css';
 /* ============================================
    Custom Spider-Man Cursor
    ============================================ */
-function SpiderCursor() {
-  const dotRef  = useRef(null);
-  const ringRef = useRef(null);
-  const posRef  = useRef({ x: -200, y: -200 });
-  const ringPos = useRef({ x: -200, y: -200 });
-  const rafRef  = useRef(null);
+function SpiderCursor({ sectionRef }) {
+  const dotRef      = useRef(null);
+  const ringRef     = useRef(null);
+  const posRef      = useRef({ x: -200, y: -200 });
+  const ringPos     = useRef({ x: -200, y: -200 });
+  const rafRef      = useRef(null);
+  const isActiveRef = useRef(false);
   const [hovering, setHovering] = useState(false);
 
   const onMove        = useCallback((e) => { posRef.current = { x: e.clientX, y: e.clientY }; }, []);
@@ -32,9 +33,11 @@ function SpiderCursor() {
   useEffect(() => {
     window.addEventListener('mousemove', onMove);
 
+    // MutationObserver limité à la section (pas document.body entier)
+    const root = sectionRef?.current ?? document.body;
     const attached = new WeakSet();
     const watch = () => {
-      document.querySelectorAll('.orbit-ring-label, .orbital-filter-btn').forEach(el => {
+      root.querySelectorAll('.orbit-ring-label, .orbital-filter-btn').forEach(el => {
         if (attached.has(el)) return;
         el.addEventListener('mouseenter', onEnterCard);
         el.addEventListener('mouseleave', onLeaveCard);
@@ -43,9 +46,25 @@ function SpiderCursor() {
     };
     watch();
     const mo = new MutationObserver(watch);
-    mo.observe(document.body, { childList: true, subtree: true });
+    mo.observe(root, { childList: true, subtree: true });
+
+    // RAF actif seulement quand la section est visible
+    const visObserver = new IntersectionObserver(
+      ([entry]) => {
+        isActiveRef.current = entry.isIntersecting;
+        if (entry.isIntersecting && !rafRef.current) {
+          rafRef.current = requestAnimationFrame(animate);
+        }
+      },
+      { threshold: 0 }
+    );
+    if (sectionRef?.current) visObserver.observe(sectionRef.current);
 
     const animate = () => {
+      if (!isActiveRef.current) {
+        rafRef.current = null;
+        return;
+      }
       const lerpFactor = 0.13;
       ringPos.current.x += (posRef.current.x - ringPos.current.x) * lerpFactor;
       ringPos.current.y += (posRef.current.y - ringPos.current.y) * lerpFactor;
@@ -64,10 +83,11 @@ function SpiderCursor() {
 
     return () => {
       window.removeEventListener('mousemove', onMove);
-      cancelAnimationFrame(rafRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       mo.disconnect();
+      visObserver.disconnect();
     };
-  }, [onMove, onEnterCard, onLeaveCard]);
+  }, [onMove, onEnterCard, onLeaveCard, sectionRef]);
 
   return (
     <>
@@ -123,7 +143,7 @@ export default function HeroSkill({ theme = 'miles' }) {
       ref={containerRef}
       className={`hero-skill theme-${theme} ${isVisible ? 'hero-skill--visible' : ''}`}
     >
-      <SpiderCursor />
+      <SpiderCursor sectionRef={containerRef} />
 
       {/* Ambient orbs */}
       <div className="skill-orbs" aria-hidden="true">
