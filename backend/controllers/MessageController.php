@@ -8,7 +8,6 @@
  */
 
 require_once __DIR__ . '/../core/Controller.php';
-require_once __DIR__ . '/../core/Mailer.php';
 require_once __DIR__ . '/../models/Message.php';
 
 class MessageController extends Controller
@@ -123,14 +122,14 @@ class MessageController extends Controller
         $body .= "Message :\n" . $data['content']          . "\n\n";
         $body .= "---\nCe message a été envoyé automatiquement depuis votre Portfolio SAE601.";
 
-        // SMTP configuré → envoi authentifié (recommandé, évite le spam)
+        // SMTP configuré → envoi authentifié
         if (!empty(SMTP_HOST) && !empty(SMTP_USER) && !empty(SMTP_PASS)) {
-            $mailer = new Mailer();
-            $mailer->send(ADMIN_EMAIL, $subject, $body, $data['email']);
-            return;
+            $mailerFile = __DIR__ . '/../core/Mailer.php';
+            if (file_exists($mailerFile)) {
+                require_once $mailerFile;
+                $mailer = new Mailer();
+                $mailer->send(ADMIN_EMAIL, $subject, $body, $data['email']);
+            }
         }
-
-        // mail() natif non disponible sur Infomaniak — SMTP requis
-        // Configurer SMTP_HOST, SMTP_USER, SMTP_PASS dans .env pour activer les notifications
     }
 }
